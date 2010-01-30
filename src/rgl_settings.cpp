@@ -66,7 +66,7 @@ int rglReadSettings()
     section[0] = 0;
     while (fgets(line, 255, fp)) {
         int l = strlen(line);
-        char * e;
+        //char * e;
         if (l > 0 && line[l-1] == '\n') {
             line[l-1] = 0;
             l--;

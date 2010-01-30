@@ -388,7 +388,7 @@ static void rdp_load_tlut(uint32_t w1, uint32_t w2)
 
     rdpChanged |= RDP_BITS_TLUT;
 
-    int count = (tile.sh - tile.sl + 4 >>2) * (tile.th - tile.tl + 4 >>2);
+    int count = ((tile.sh - tile.sl + 4) >>2) * ((tile.th - tile.tl + 4) >>2);
 
     switch (rdpTiSize)
     {
@@ -440,7 +440,7 @@ static void rdp_load_block(uint32_t w1, uint32_t w2)
     sh	= ((w2 >> 12) & 0xfff);
     dxt	= ((w2 >>  0) & 0xfff);
 
-    width = (sh - sl) + 1 << rdpTiSize >> 1;
+    width = (sh - sl + 1) << rdpTiSize >> 1;
 
     src = (uint32_t*)&rdram[0];
     tc = (uint32_t*)rdpTmem;
@@ -468,9 +468,9 @@ static void rdp_load_block(uint32_t w1, uint32_t w2)
         {
             int t = j >> 11;
 
-            tc[((tb+i) + 0  ^ ((t & 1) ? swap : 0))&0x3ff] =
+            tc[(((tb+i) + 0)  ^ ((t & 1) ? swap : 0))&0x3ff] =
                 src[rdpTiAddress / 4 + ((tl * rdpTiWidth) / 4) + sl + i + 0];
-            tc[((tb+i) + 1 ^ ((t & 1) ? swap : 0))&0x3ff] =
+            tc[(((tb+i) + 1) ^ ((t & 1) ? swap : 0))&0x3ff] =
                 src[rdpTiAddress / 4 + ((tl * rdpTiWidth) / 4) + sl + i + 1];
 
             j += dxt;
@@ -603,7 +603,7 @@ static void rdp_load_tile(uint32_t w1, uint32_t w2)
 static void rdp_set_tile(uint32_t w1, uint32_t w2)
 {
     int tilenum = (w2 >> 24) & 0x7;
-    int i;
+    //int i;
 
     rdpChanged |= RDP_BITS_TILE_SETTINGS;
     rdpTileSet |= 1<<tilenum;
@@ -730,8 +730,8 @@ static void (* rdp_command_table[64])(uint32_t w1, uint32_t w2) =
 
 void rdp_process_list(void)
 {
-    int i;
-    uint32_t cmd, length, cmd_length;
+    //int i;
+    uint32_t cmd;//, length, cmd_length;
 
     rglUpdateStatus();
     if (!rglSettings.threaded)
@@ -797,7 +797,7 @@ void rdp_process_list(void)
 
 int rdp_store_list(void)
 {
-    int i;
+    uint32_t i;
     uint32_t data, cmd, length;
     int sync = 0;
 

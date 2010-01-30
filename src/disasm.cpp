@@ -74,11 +74,13 @@ static const int rdp_command_length[64] =
 
 int rdp_dasm(UINT32 * rdp_cmd_data, int rdp_cmd_cur, int length, char *buffer)
 {
-    int i;
+    //int i;
     int tile;
     const char *format, *size;
     char sl[32], tl[32], sh[32], th[32];
-    char s[32], t[32], w[32];
+    char s[32], t[32];//, w[32];
+    char dsdx[32], dtdy[32];
+#if 0
     char dsdx[32], dtdx[32], dwdx[32];
     char dsdy[32], dtdy[32], dwdy[32];
     char dsde[32], dtde[32], dwde[32];
@@ -88,6 +90,7 @@ int rdp_dasm(UINT32 * rdp_cmd_data, int rdp_cmd_cur, int length, char *buffer)
     char drdx[32], dgdx[32], dbdx[32], dadx[32];
     char drdy[32], dgdy[32], dbdy[32], dady[32];
     char drde[32], dgde[32], dbde[32], dade[32];
+#endif
     UINT32 r,g,b,a;
 
     UINT32 cmd[64];
