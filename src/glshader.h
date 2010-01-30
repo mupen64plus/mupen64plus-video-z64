@@ -4,9 +4,9 @@
 #include "rdp.h"
 
 typedef struct {
-  GLhandleARB vs, fs, prog;
+    GLhandleARB vs, fs, prog;
 #ifdef RDP_DEBUG
-  const char * vsrc, * fsrc;
+    const char * vsrc, * fsrc;
 #endif
 } rglShader_t;
 

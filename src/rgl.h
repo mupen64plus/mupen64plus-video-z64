@@ -59,26 +59,24 @@ extern GFX_INFO gfx;
 // highly experimental AND slow
 //#define RGL_EXACT_BLEND
 
-//#define RGL_USE_GLUT
-
 struct rglSettings_t {
-  int hiresFb;
-  int resX, resY;
-  int fsResX, fsResY;
-  int fbInfo;
-  int forceSwap;
-  int threaded;
-  int async;
-  int noNpotFbos;
-  int lowres;
+    int hiresFb;
+    int resX, resY;
+    int fsResX, fsResY;
+    int fbInfo;
+    int forceSwap;
+    int threaded;
+    int async;
+    int noNpotFbos;
+    int lowres;
 };
 
 extern rglSettings_t rglSettings;
 
 struct rglDepthBuffer_t {
-  uint32_t address;
-  int width, height;
-  GLuint zbid;
+    uint32_t address;
+    int width, height;
+    GLuint zbid;
 };
 #define MAX_DEPTH_BUFFERS 16
 extern rglDepthBuffer_t zBuffers[MAX_DEPTH_BUFFERS];
@@ -86,30 +84,30 @@ extern int nbZBuffers;
 
 struct rglRenderBuffer_t;
 struct rglDepthSection_t {
-  rglRenderBuffer_t * buffer;
-  int chunkId;
+    rglRenderBuffer_t * buffer;
+    int chunkId;
 };
 #define RGL_MAX_DEPTH_SECTIONS 16
 
 struct rglRenderBuffer_t {
-  CIRCLEQ_ENTRY(rglRenderBuffer_t) link;
-  uint32_t addressStart, addressStop;
-  int format, size, fbWidth, line;
-  int width, height;
-  int flags;
-  GLuint texid, fbid;
+    CIRCLEQ_ENTRY(rglRenderBuffer_t) link;
+    uint32_t addressStart, addressStop;
+    int format, size, fbWidth, line;
+    int width, height;
+    int flags;
+    GLuint texid, fbid;
 #ifdef RGL_EXACT_BLEND
-  GLuint texid2, fbid2;
+    GLuint texid2, fbid2;
 #endif
-  int realWidth, realHeight;
-  int fboWidth, fboHeight;
-  int redimensionStamp;
-  rdpRect_t area;
-  rdpRect_t mod;
-  rglDepthBuffer_t * depthBuffer;
-  int chunkId;
-  rglDepthSection_t depthSections[16];
-  int nbDepthSections;
+    int realWidth, realHeight;
+    int fboWidth, fboHeight;
+    int redimensionStamp;
+    rdpRect_t area;
+    rdpRect_t mod;
+    rglDepthBuffer_t * depthBuffer;
+    int chunkId;
+    rglDepthSection_t depthSections[16];
+    int nbDepthSections;
 };
 #define RGL_RB_DEPTH   1
 #define RGL_RB_FULL    2
@@ -129,43 +127,43 @@ extern rglRenderBufferHead_t rBufferHead;
 
 extern int rglTexCacheCounter;
 struct rglTexture_t {
-  CIRCLEQ_ENTRY(rglTexture_t) byCrc, byUsage;
-  GLuint id, zid;
-  uint32_t crc;
-  int w, h, fmt;
-  int clipw, cliph;
-  GLuint ws, wt, filter; // current settings
+    CIRCLEQ_ENTRY(rglTexture_t) byCrc, byUsage;
+    GLuint id, zid;
+    uint32_t crc;
+    int w, h, fmt;
+    int clipw, cliph;
+    GLuint ws, wt, filter; // current settings
 };
 CIRCLEQ_HEAD(rglTextureHead_t, rglTexture_t);
 #define RGL_TEX_CACHE_SIZE 1024
 extern rglTexture_t rglTextures[RGL_TEX_CACHE_SIZE];
 struct rglTexCache_t {
-  int counter;
-  rglTexture_t * tex;
+    int counter;
+    rglTexture_t * tex;
 };
 extern rglTexCache_t rglTexCache[0x1000];
 extern uint8_t rglTmpTex[];
 extern uint8_t rglTmpTex2[];
 
 struct rglTile_t : public rdpTile_t {
-  rglTexture_t * tex;
-  rglRenderBuffer_t * hiresBuffer;
-  uint32_t hiresAddress;
-  GLuint ws, wt; // GL clamping modes
-  GLuint filter; // GL filter mode
+    rglTexture_t * tex;
+    rglRenderBuffer_t * hiresBuffer;
+    uint32_t hiresAddress;
+    GLuint ws, wt; // GL clamping modes
+    GLuint filter; // GL filter mode
 };
 
 struct rglVertex_t {
-  float x, y, z, w;
-  float s, t;
-  uint8_t r, g, b, a;
+    float x, y, z, w;
+    float s, t;
+    uint8_t r, g, b, a;
 };
 
 struct rglStrip_t {
-  int tilenum;
-  int nbVtxs;
-  int flags;
-  rglVertex_t * vtxs;
+    int tilenum;
+    int nbVtxs;
+    int flags;
+    rglVertex_t * vtxs;
 };
 
 #define RGL_STRIP_TEX1    1
@@ -174,16 +172,16 @@ struct rglStrip_t {
 #define RGL_STRIP_ZBUFFER 8
 
 struct rglRenderChunk_t {
-  rdpState_t rdpState;
-  rglTile_t tiles[8];
-  rglRenderBuffer_t * renderBuffer;
-  uint32_t depthAddress;
-  int flags;
-  int nbStrips;
-  rglStrip_t * strips;
+    rdpState_t rdpState;
+    rglTile_t tiles[8];
+    rglRenderBuffer_t * renderBuffer;
+    uint32_t depthAddress;
+    int flags;
+    int nbStrips;
+    rglStrip_t * strips;
 #ifdef RDP_DEBUG
-  rglShader_t * shader;
-  int tracePos;
+    rglShader_t * shader;
+    int tracePos;
 #endif
 };
 
@@ -201,9 +199,9 @@ extern rglVertex_t vtxs[6*MAX_STRIPS];
 extern int nbStrips, nbVtxs;
 
 struct rglRenderMode_t {
-  rdpOtherModes_t otherModes;
-  rdpCombineModes_t combineModes;
-  uint32_t flags;
+    rdpOtherModes_t otherModes;
+    rdpCombineModes_t combineModes;
+    uint32_t flags;
 };
 
 #define RGL_RM_DEPTH 1
@@ -268,6 +266,8 @@ void rglRdram2Framebuffer(rglRenderBuffer_t & buffer, uint32_t start, uint32_t s
 void rglRenderChunks(rglRenderBuffer_t * upto);
 void rglRenderChunks(int upto);
 float rglZscale(uint16_t z);
+
+void rglSwapBuffers();
 
 extern int screen_width, screen_height;
 

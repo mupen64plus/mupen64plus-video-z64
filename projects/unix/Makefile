@@ -1,6 +1,7 @@
 #/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 # *   Mupen64plus-video-z64 - Makefile                                      *
-# *   Mupen64Plus homepage: http://code.google.com/p/mupen64plus/           *
+# *   http://bitbucket.org/wahrhaft/mupen64plus-video-z64/                  *
+# *   Copyright (C) 2010 Jon Ring                                           *
 # *   Copyright (C) 2007-2009 Richard Goedeken                              *
 # *   Copyright (C) 2007-2008 DarkJeztr Tillin9                             *
 # *                                                                         *
@@ -19,7 +20,7 @@
 # *   Free Software Foundation, Inc.,                                       *
 # *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.          *
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-# Makefile for RiceVideo plugin in Mupen64Plus
+# Makefile for Z64 Video plugin in Mupen64Plus
 
 # detect operating system
 UNAME = $(shell uname -s)
@@ -182,9 +183,6 @@ ifeq ($(DEBUG),1)
   CFLAGS += -g
   STRIP = true # disable binary strip
 endif
-ifeq ($(NO_ASM), 1)
-  CFLAGS += -DNO_ASM
-endif
 
 # set installation options
 ifeq ($(PREFIX),)
@@ -208,7 +206,6 @@ SOURCE = \
 	$(SRCDIR)/rgl_rendermode.cpp \
 	$(SRCDIR)/rgl_geometry.cpp \
 	$(SRCDIR)/rgl_debugger.cpp \
-	$(SRCDIR)/rgl_glut.cpp \
 	$(SRCDIR)/rgl_osdep.cpp \
 	$(SRCDIR)/rdp.cpp \
 	$(SRCDIR)/glshader.cpp \
@@ -226,7 +223,7 @@ $(shell mkdir -p $(OBJDIRS))
 TARGET = mupen64plus-video-z64.$(SO_EXTENSION)
 
 targets:
-	@echo "Mupen64plus-video-rice N64 Graphics plugin makefile. "
+	@echo "Mupen64plus-video-z64 N64 Graphics plugin makefile. "
 	@echo "  Targets:"
 	@echo "    all           == Build Mupen64plus-video-rice plugin"
 	@echo "    clean         == remove object files"
@@ -235,7 +232,6 @@ targets:
 	@echo "    uninstall     == Uninstall Mupen64Plus-video-rice plugin"
 	@echo "  Options:"
 	@echo "    BITS=32       == build 32-bit binaries on 64-bit machine"
-	@echo "    NO_ASM=1      == build without inline assembly code (x86 MMX/SSE)"
 	@echo "    APIDIR=path   == path to find Mupen64Plus Core headers"
 	@echo "  Install Options:"
 	@echo "    PREFIX=path   == install/uninstall prefix (default: /usr/local)"
