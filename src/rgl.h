@@ -21,10 +21,6 @@
 #ifndef _RGL_H_
 #define _RGL_H_
 
-#include "m64p_types.h"
-#include "m64p_plugin.h"
-#include "m64p_vidext.h"
-
 #include "queue.h"
 #include "rgl_assert.h"
 #include "rdp.h"
@@ -39,8 +35,6 @@
 #include "glshader.h"
 
 #include <limits.h> //for PATH_MAX
-
-extern char g_ConfigDir[PATH_MAX];
 
 #define DWORD unsigned int
 extern GFX_INFO gfx;
@@ -69,9 +63,11 @@ struct rglSettings_t {
     int async;
     int noNpotFbos;
     int lowres;
+    int fullscreen;
 };
 
 extern rglSettings_t rglSettings;
+extern void (*render_callback)();
 
 struct rglDepthBuffer_t {
     uint32_t address;

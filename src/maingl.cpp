@@ -24,13 +24,13 @@
 #include <SDL/SDL.h>
 
 #define THREADED
-#ifdef WIN32
-#define THREADED
-#endif
 
 GFX_INFO gfx;
 
-char g_ConfigDir[PATH_MAX] = {0};
+void (*render_callback)() = NULL;
+static void (*l_DebugCallback)(void *, int, const char *) = NULL;
+static void *l_DebugCallContext = NULL;
+
 
 /* definitions of pointers to Core video extension functions */
 ptr_VidExt_Init                  CoreVideo_Init = NULL;
@@ -42,6 +42,20 @@ ptr_VidExt_ToggleFullScreen      CoreVideo_ToggleFullScreen = NULL;
 ptr_VidExt_GL_GetProcAddress     CoreVideo_GL_GetProcAddress = NULL;
 ptr_VidExt_GL_SetAttribute       CoreVideo_GL_SetAttribute = NULL;
 ptr_VidExt_GL_SwapBuffers        CoreVideo_GL_SwapBuffers = NULL;
+
+/* definitions of pointers to Core config functions */
+ptr_ConfigOpenSection      ConfigOpenSection = NULL;
+ptr_ConfigSetParameter     ConfigSetParameter = NULL;
+ptr_ConfigGetParameter     ConfigGetParameter = NULL;
+ptr_ConfigGetParameterHelp ConfigGetParameterHelp = NULL;
+ptr_ConfigSetDefaultInt    ConfigSetDefaultInt = NULL;
+ptr_ConfigSetDefaultFloat  ConfigSetDefaultFloat = NULL;
+ptr_ConfigSetDefaultBool   ConfigSetDefaultBool = NULL;
+ptr_ConfigSetDefaultString ConfigSetDefaultString = NULL;
+ptr_ConfigGetParamInt      ConfigGetParamInt = NULL;
+ptr_ConfigGetParamFloat    ConfigGetParamFloat = NULL;
+ptr_ConfigGetParamBool     ConfigGetParamBool = NULL;
+ptr_ConfigGetParamString   ConfigGetParamString = NULL;
 
 #ifdef THREADED
 volatile static int waiting;
@@ -59,12 +73,11 @@ int rdpThreadFunc(void * dummy)
             rdp_process_list();
         if (!rglSettings.async)
             SDL_SemPost(rdpCommandCompleteSema);
-#ifndef WIN32
+
         if (rglStatus == RGL_STATUS_CLOSED) {
             rdpThread = NULL;
             return 0;
         }
-#endif
     }
     return 0;
 }
@@ -106,6 +119,20 @@ void rdpCreateThread()
 }
 #endif
 
+void rdp_log(m64p_msg_level level, const char *msg, ...)
+{
+    char buf[1024];
+    va_list args;
+    va_start(args, msg);
+    vsnprintf(buf, 1023, msg, args);
+    buf[1023]='\0';
+    va_end(args);
+    if (l_DebugCallback)
+    {
+        l_DebugCallback(l_DebugCallContext, level, buf);
+    }
+}
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -113,6 +140,10 @@ extern "C" {
     EXPORT m64p_error CALL PluginStartup(m64p_dynlib_handle CoreLibHandle, void *Context,
         void (*DebugCallback)(void *, int, const char *))
     {
+        ///* first thing is to set the callback function for debug info */
+        l_DebugCallback = DebugCallback;
+        l_DebugCallContext = Context;
+
         /* Get the core Video Extension function pointers from the library handle */
         CoreVideo_Init = (ptr_VidExt_Init) osal_dynlib_getproc(CoreLibHandle, "VidExt_Init");
         CoreVideo_Quit = (ptr_VidExt_Quit) osal_dynlib_getproc(CoreLibHandle, "VidExt_Quit");
@@ -128,10 +159,33 @@ extern "C" {
             !CoreVideo_SetCaption || !CoreVideo_ToggleFullScreen || !CoreVideo_GL_GetProcAddress ||
             !CoreVideo_GL_SetAttribute || !CoreVideo_GL_SwapBuffers)
         {
-            printf("Couldn't connect to Core video functions");
+            rdp_log(M64MSG_ERROR, "Couldn't connect to Core video functions");
             return M64ERR_INCOMPATIBLE;
         }
+
+        /* Get the core config function pointers from the library handle */
+        ConfigOpenSection = (ptr_ConfigOpenSection) osal_dynlib_getproc(CoreLibHandle, "ConfigOpenSection");
+        ConfigSetParameter = (ptr_ConfigSetParameter) osal_dynlib_getproc(CoreLibHandle, "ConfigSetParameter");
+        ConfigGetParameter = (ptr_ConfigGetParameter) osal_dynlib_getproc(CoreLibHandle, "ConfigGetParameter");
+        ConfigSetDefaultInt = (ptr_ConfigSetDefaultInt) osal_dynlib_getproc(CoreLibHandle, "ConfigSetDefaultInt");
+        ConfigSetDefaultFloat = (ptr_ConfigSetDefaultFloat) osal_dynlib_getproc(CoreLibHandle, "ConfigSetDefaultFloat");
+        ConfigSetDefaultBool = (ptr_ConfigSetDefaultBool) osal_dynlib_getproc(CoreLibHandle, "ConfigSetDefaultBool");
+        ConfigSetDefaultString = (ptr_ConfigSetDefaultString) osal_dynlib_getproc(CoreLibHandle, "ConfigSetDefaultString");
+        ConfigGetParamInt = (ptr_ConfigGetParamInt) osal_dynlib_getproc(CoreLibHandle, "ConfigGetParamInt");
+        ConfigGetParamFloat = (ptr_ConfigGetParamFloat) osal_dynlib_getproc(CoreLibHandle, "ConfigGetParamFloat");
+        ConfigGetParamBool = (ptr_ConfigGetParamBool) osal_dynlib_getproc(CoreLibHandle, "ConfigGetParamBool");
+        ConfigGetParamString = (ptr_ConfigGetParamString) osal_dynlib_getproc(CoreLibHandle, "ConfigGetParamString");
+        if (!ConfigOpenSection   || !ConfigSetParameter    || !ConfigGetParameter ||
+            !ConfigSetDefaultInt || !ConfigSetDefaultFloat || !ConfigSetDefaultBool || !ConfigSetDefaultString ||
+            !ConfigGetParamInt   || !ConfigGetParamFloat   || !ConfigGetParamBool   || !ConfigGetParamString)
+        {
+            rdp_log(M64MSG_ERROR, "Couldn't connect to Core configuration functions");
+            return M64ERR_INCOMPATIBLE;
+        }
+
         CoreVideo_Init();
+        rglReadSettings();
+
         return M64ERR_SUCCESS;
     }
 
@@ -165,6 +219,7 @@ extern "C" {
 
     EXPORT void CALL SetRenderingCallback(void (*callback)())
     {
+        render_callback = callback;
     }
 
     EXPORT void CALL ReadScreen(void **dest, long *width, long *height)
@@ -175,10 +230,6 @@ extern "C" {
         *height = rglSettings.resY;
     }
 
-    EXPORT void CALL DrawScreen (void)
-    {
-    }
-
     EXPORT int CALL InitiateGFX (GFX_INFO Gfx_Info)
     {
         LOG("InitiateGFX\n");
@@ -187,9 +238,6 @@ extern "C" {
         memset(rdpTmem, 0, 0x1000);
         memset(&rdpState, 0, sizeof(rdpState));
 #ifdef THREADED
-        rglSettings.threaded = 0;
-        rglSettings.async = 0;
-        rglReadSettings();
         if (rglSettings.threaded)
             rdpCreateThread();
 #endif
@@ -208,10 +256,6 @@ extern "C" {
     {
     }
 
-    static void glut_rdp_process_list()
-    {
-        rdp_process_list();
-    }
 
     EXPORT void CALL ProcessRDPList(void)
     {
@@ -232,19 +276,10 @@ extern "C" {
     {
 #ifdef THREADED
         if (rglSettings.threaded) {
-#ifdef WIN32
-            fflush(stdout); fflush(stderr);
-            //while (waiting); // temporary hack
-#endif
             rglNextStatus = RGL_STATUS_CLOSED;
-#ifndef WIN32
             do
-            rdpPostCommand();
+                rdpPostCommand();
             while (rglStatus != RGL_STATUS_CLOSED);
-#else
-            void rglWin32Windowed();
-            rglWin32Windowed();
-#endif
         } else
 #endif
         {
@@ -255,6 +290,7 @@ extern "C" {
 
     EXPORT int CALL RomOpen()
     {
+        int success = 1;
 #ifdef THREADED
         if (rglSettings.threaded) {
             rdpCreateThread();
@@ -265,9 +301,9 @@ extern "C" {
 #endif
         {
             rglNextStatus = rglStatus = RGL_STATUS_WINDOWED;
-            rglOpenScreen();
+            success = rglOpenScreen();
         }
-        return true;
+        return success;
     }
 
     EXPORT void CALL ShowCFB (void)
@@ -285,21 +321,6 @@ extern "C" {
             rglUpdate();
         }
     }
-
-    /******************************************************************
-    NOTE: THIS HAS BEEN ADDED FOR MUPEN64PLUS AND IS NOT PART OF THE
-    ORIGINAL SPEC
-    Function: SetConfigDir
-    Purpose:  To pass the location where config files should be read/
-    written to.
-    input:    path to config directory
-    output:   none
-    *******************************************************************/
-    EXPORT void CALL SetConfigDir(char *configDir)
-    {
-        strncpy(g_ConfigDir, configDir, PATH_MAX);
-    }
-
 
     EXPORT void CALL ViStatusChanged (void)
     {

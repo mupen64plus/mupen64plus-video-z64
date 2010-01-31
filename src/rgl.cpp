@@ -1338,7 +1338,6 @@ ok:
 
 void rglClose()
 {
-    printf("rglClose()\n");
 
 #ifdef RDP_DEBUG
     rglCloseDebugger();
@@ -1362,8 +1361,6 @@ void rglClose()
 
 int rglInit()
 {
-    printf("rglInit()\n");
-
     static int init;
     if (!init) {
         init = 1;

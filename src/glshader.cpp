@@ -21,7 +21,7 @@ static void printInfoLog(GLhandleARB obj, const char * src)
         infoLog = (char *)malloc(infologLength);
         glGetInfoLogARB(obj, infologLength, &charsWritten, infoLog);
         if (*infoLog)
-            printf("%s\n%s", src, infoLog);
+            rdp_log(M64MSG_INFO, "%s\n%s", src, infoLog);
         free(infoLog);
     }
 }

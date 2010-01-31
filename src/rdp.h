@@ -26,6 +26,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "m64p_types.h"
+#include "m64p_plugin.h"
+#include "m64p_vidext.h"
+#include "m64p_config.h"
 
 #define LSB_FIRST 1 // TODO : check for platform
 #ifdef LSB_FIRST
@@ -241,19 +245,7 @@ int rdp_dasm(uint32_t * rdp_cmd_data, int rdp_cmd_cur, int length, char *buffer)
 void rdp_process_list(void);
 int rdp_store_list(void);
 
-
-#include <stdarg.h>
-static void FATAL(const char * s, ...)
-{
-    va_list ap;
-    va_start(ap, s);
-    vfprintf(stderr, s, ap);
-    va_end(ap);
-    exit(0);
-}
-#ifndef WIN32
-//#define RDP_DEBUG
-#endif
+void rdp_log(m64p_msg_level level, const char *msg, ...);
 
 #ifdef RDP_DEBUG
 
@@ -275,9 +267,9 @@ static void LOG(const char * s, ...)
 
 #else // RDP_DEBUG
 
-#define DUMP(...)
-#define LOG(...)
-#define LOGERROR(...)
+#define DUMP(...) rdp_log(M64MSG_VERBOSE, __VA_ARGS__)
+#define LOG(...) rdp_log(M64MSG_VERBOSE, __VA_ARGS__)
+#define LOGERROR(...) rdp_log(M64MSG_WARNING, __VA_ARGS__)
 
 #endif // RDP_DEBUG
 

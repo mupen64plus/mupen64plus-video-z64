@@ -580,7 +580,7 @@ static void rdp_load_tile(uint32_t w1, uint32_t w2)
 
             if (tb + (line/2 * (height-1) + width) > 1024)
             {
-                FATAL("rdp_load_tile 32-bit: tmem %04X, width %d, height %d = %d\n", rdpTiles[tilenum].tmem, width, height, width*height);
+                rdp_log(M64MSG_ERROR, "rdp_load_tile 32-bit: tmem %04X, width %d, height %d = %d\n", rdpTiles[tilenum].tmem, width, height, width*height);
             }
 
             for (j=0; j < height; j++)
@@ -596,7 +596,8 @@ static void rdp_load_tile(uint32_t w1, uint32_t w2)
             break;
         }
 
-    default:	FATAL("RDP: load_tile: size = %d\n", rdpTiSize);
+    default:	
+        rdp_log(M64MSG_ERROR, "RDP: load_tile: size = %d\n", rdpTiSize);
     }
 }
 
