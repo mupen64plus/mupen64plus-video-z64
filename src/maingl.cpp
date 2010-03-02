@@ -222,10 +222,9 @@ extern "C" {
         render_callback = callback;
     }
 
-    EXPORT void CALL ReadScreen(void **dest, long *width, long *height)
+    EXPORT void CALL ReadScreen2(void *dest, int *width, int *height, int front)
     {
         LOG("ReadScreen\n");
-
         *width = rglSettings.resX;
         *height = rglSettings.resY;
     }
