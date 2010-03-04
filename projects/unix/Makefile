@@ -252,9 +252,13 @@ uninstall:
 	rm -f "$(DESTDIR)$(LIBDIR)/$(TARGET)"
 
 clean:
-	rm -f ./_obj/*.o  ./_obj/liblinux/* $(TARGET)
+	rm -rf ./_obj/* $(TARGET)
 
 rebuild: clean all
+
+# build dependency files
+CFLAGS += -MD
+-include $(OBJECTS:.o=.d)
 
 # build rules
 $(TARGET): $(OBJECTS)
