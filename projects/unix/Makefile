@@ -213,6 +213,9 @@ SOURCE = \
 	$(SRCDIR)/maingl.cpp \
 	$(SRCDIR)/osal_dynamiclib_unix.c
 
+# only export api symbols
+LDFLAGS += -Wl,-version-script,$(SRCDIR)/video_api_export.ver
+
 # generate a list of object files build, make a temporary directory for them
 OBJECTS := $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(filter %.c, $(SOURCE)))
 OBJECTS += $(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(filter %.cpp, $(SOURCE)))
