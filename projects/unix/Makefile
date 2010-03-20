@@ -109,6 +109,8 @@ ifeq ($(OS),FREEBSD)
 endif
 ifeq ($(OS), LINUX)
   LDFLAGS += -lGL
+  # only export api symbols
+  LDFLAGS += -Wl,-version-script,$(SRCDIR)/video_api_export.ver
   ifeq ($(CPU), X86)
     ifeq ($(ARCH_DETECTED), 64BITS)
       CFLAGS += -pipe -O3 -march=athlon64
@@ -217,9 +219,6 @@ SOURCE = \
 	$(SRCDIR)/disasm.cpp \
 	$(SRCDIR)/maingl.cpp \
 	$(SRCDIR)/osal_dynamiclib_unix.c
-
-# only export api symbols
-LDFLAGS += -Wl,-version-script,$(SRCDIR)/video_api_export.ver
 
 # generate a list of object files build, make a temporary directory for them
 OBJECTS := $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(filter %.c, $(SOURCE)))
