@@ -202,7 +202,7 @@ extern "C" {
             *PluginType = M64PLUGIN_GFX;
 
         if (PluginVersion != NULL)
-            *PluginVersion = 0x016300;
+            *PluginVersion = 0x016304;
 
         if (APIVersion != NULL)
             *APIVersion = PLUGIN_API_VERSION;
