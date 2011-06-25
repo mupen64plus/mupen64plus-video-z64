@@ -26,6 +26,13 @@
 
 #define THREADED
 
+#define PLUGIN_VERSION           0x016304
+#define VIDEO_PLUGIN_API_VERSION 0x020000
+#define CONFIG_API_VERSION       0x020000
+#define VIDEXT_API_VERSION       0x020000
+
+#define VERSION_PRINTF_SPLIT(x) (((x) >> 16) & 0xffff), (((x) >> 8) & 0xff), ((x) & 0xff)
+
 GFX_INFO gfx;
 
 void (*render_callback)() = NULL;
@@ -164,6 +171,29 @@ extern "C" {
             return M64ERR_INCOMPATIBLE;
         }
 
+        /* attach and call the CoreGetAPIVersions function, check Config and Video Extension API versions for compatibility */
+        ptr_CoreGetAPIVersions CoreAPIVersionFunc;
+        CoreAPIVersionFunc = (ptr_CoreGetAPIVersions) osal_dynlib_getproc(CoreLibHandle, "CoreGetAPIVersions");
+        if (CoreAPIVersionFunc == NULL)
+        {
+            rdp_log(M64MSG_ERROR, "Core emulator broken; no CoreAPIVersionFunc() function found.");
+            return M64ERR_INCOMPATIBLE;
+        }
+        int ConfigAPIVersion, DebugAPIVersion, VidextAPIVersion;
+        (*CoreAPIVersionFunc)(&ConfigAPIVersion, &DebugAPIVersion, &VidextAPIVersion, NULL);
+        if ((ConfigAPIVersion & 0xffff0000) != (CONFIG_API_VERSION & 0xffff0000))
+        {
+            rdp_log(M64MSG_ERROR, "Emulator core Config API (v%i.%i.%i) incompatible with plugin (v%i.%i.%i)",
+                    VERSION_PRINTF_SPLIT(ConfigAPIVersion), VERSION_PRINTF_SPLIT(CONFIG_API_VERSION));
+            return M64ERR_INCOMPATIBLE;
+        }
+        if ((VidextAPIVersion & 0xffff0000) != (VIDEXT_API_VERSION & 0xffff0000))
+        {
+            rdp_log(M64MSG_ERROR, "Emulator core Video Extension API (v%i.%i.%i) incompatible with plugin (v%i.%i.%i)",
+                    VERSION_PRINTF_SPLIT(VidextAPIVersion), VERSION_PRINTF_SPLIT(VIDEXT_API_VERSION));
+            return M64ERR_INCOMPATIBLE;
+        }
+
         /* Get the core config function pointers from the library handle */
         ConfigOpenSection = (ptr_ConfigOpenSection) osal_dynlib_getproc(CoreLibHandle, "ConfigOpenSection");
         ConfigSetParameter = (ptr_ConfigSetParameter) osal_dynlib_getproc(CoreLibHandle, "ConfigSetParameter");
@@ -202,10 +232,10 @@ extern "C" {
             *PluginType = M64PLUGIN_GFX;
 
         if (PluginVersion != NULL)
-            *PluginVersion = 0x016304;
+            *PluginVersion = PLUGIN_VERSION;
 
         if (APIVersion != NULL)
-            *APIVersion = PLUGIN_API_VERSION;
+            *APIVersion = VIDEO_PLUGIN_API_VERSION;
 
         if (PluginNamePtr != NULL)
             *PluginNamePtr = "Z64gl";

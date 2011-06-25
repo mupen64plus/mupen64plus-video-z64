@@ -28,6 +28,7 @@
 #include <string.h>
 
 #include "m64p_types.h"
+#include "m64p_common.h"
 #include "m64p_plugin.h"
 #include "m64p_vidext.h"
 #include "m64p_config.h"
