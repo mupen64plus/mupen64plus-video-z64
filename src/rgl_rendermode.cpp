@@ -167,13 +167,6 @@ void rglSetCombiner(rglRenderChunk_t & chunk, int format)
         "0.0",      "0.0",      "0.0",          "0.0"
     };
 
-    static const char *sbRGB[] = {
-        "c",        t1,         t2,                 "p/*PRIM*/", 
-        "gl_Color", "e",        "0.5/*CENTER*/",    "t1/*K4*/",
-        "0.0",      "0.0",      "0.0",              "0.0",
-        "0.0",      "0.0",      "0.0",              "0.0"
-    };
-
     static const char *mRGB[] = {
         "c",                t1,                 t2,                 "p/*PRIM*/", 
         "gl_Color/*SHADE*/","e",                "0.0/*SCALE*/",     "c.a/*COMBINED_A*/",
@@ -214,7 +207,7 @@ void rglSetCombiner(rglRenderChunk_t & chunk, int format)
     { "c/*PREV*/", "f", "b", "fog/*FOG*/" };
     const static char * bA[2][4] =
     { {"c.a/*PREVA*/", "fog.a/*FOGA*/", "gl_Color.a/*SHADEA*/", "0.0/*ZERO*/"},
-    {_1ma/*"(1.0-c.a/*PREVA)"*/, "0.0/*f.a*//*FRAGA*/", "1.0", "0.0"}}; // need clamping on 1-alpha ?
+    {_1ma/*"(1.0-c.a/ *PREVA)"*/, "0.0/*f.a*//*FRAGA*/", "1.0", "0.0"}}; // need clamping on 1-alpha ?
 
 
     rdpState_t & state = chunk.rdpState;
@@ -529,9 +522,10 @@ case RGL_COMB_IN1_DEPTH:
 
 
     const char * blender;
-    const char * noblender;
     blender = "c = vec4(float(%s)*vec3(%s) + float(%s)*vec3(%s), 1.0); \n";
-    noblender = "c.a = 1.0;\n";
+#ifdef RGL_EXACT_BLEND
+    const char * noblender = "c.a = 1.0;\n";
+#endif
 
     int m1b, m1a, m2b, m2a;
 

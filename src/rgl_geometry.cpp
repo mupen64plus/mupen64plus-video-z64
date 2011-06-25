@@ -257,9 +257,7 @@ void rglTriangle(uint32_t w1, uint32_t w2, int shade, int texture, int zbuffer,
     int xleft, xright, xleft_inc, xright_inc;
     //int xstart, xend;
     int r, g, b, a, z, s, t, w;
-    int dr, dg, db, da;
     int drdx = 0, dgdx = 0, dbdx = 0, dadx = 0, dzdx = 0, dsdx = 0, dtdx = 0, dwdx = 0;
-    int drdy = 0, dgdy = 0, dbdy = 0, dady = 0, dzdy = 0, dsdy = 0, dtdy = 0, dwdy = 0;
     int drde = 0, dgde = 0, dbde = 0, dade = 0, dzde = 0, dsde = 0, dtde = 0, dwde = 0;
     int flip = (w1 & 0x800000) ? 1 : 0;
 
@@ -317,7 +315,6 @@ void rglTriangle(uint32_t w1, uint32_t w2, int shade, int texture, int zbuffer,
     yh &= ~3;
 
     r = 0xff;	g = 0xff;	b = 0xff;	a = 0xff;	z = 0xffff0000;	s = 0;	t = 0;	w = 0x30000;
-    dr = 0;		dg = 0;		db = 0;		da = 0;
 
     if (shade)
     {
@@ -333,10 +330,6 @@ void rglTriangle(uint32_t w1, uint32_t w2, int shade, int texture, int zbuffer,
         dgde = ((shade_base[8 ] << 16) & 0xffff0000) | (shade_base[12] & 0x0000ffff);
         dbde = (shade_base[9 ] & 0xffff0000) | ((shade_base[13] >> 16) & 0x0000ffff);
         dade = ((shade_base[9 ] << 16) & 0xffff0000) | (shade_base[13] & 0x0000ffff);
-        drdy = (shade_base[10] & 0xffff0000) | ((shade_base[14] >> 16) & 0x0000ffff);
-        dgdy = ((shade_base[10] << 16) & 0xffff0000) | (shade_base[14] & 0x0000ffff);
-        dbdy = (shade_base[11] & 0xffff0000) | ((shade_base[15] >> 16) & 0x0000ffff);
-        dady = ((shade_base[11] << 16) & 0xffff0000) | (shade_base[15] & 0x0000ffff);
     }
     if (texture)
     {
@@ -349,9 +342,6 @@ void rglTriangle(uint32_t w1, uint32_t w2, int shade, int texture, int zbuffer,
         dsde = (texture_base[8 ] & 0xffff0000) | ((texture_base[12] >> 16) & 0x0000ffff);
         dtde = ((texture_base[8 ] << 16) & 0xffff0000)	| (texture_base[12] & 0x0000ffff);
         dwde = (texture_base[9 ] & 0xffff0000) | ((texture_base[13] >> 16) & 0x0000ffff);
-        dsdy = (texture_base[10] & 0xffff0000) | ((texture_base[14] >> 16) & 0x0000ffff);
-        dtdy = ((texture_base[10] << 16) & 0xffff0000)	| (texture_base[14] & 0x0000ffff);
-        dwdy = (texture_base[11] & 0xffff0000) | ((texture_base[15] >> 16) & 0x0000ffff);
     }
     if (zbuffer)
     {
@@ -360,14 +350,13 @@ void rglTriangle(uint32_t w1, uint32_t w2, int shade, int texture, int zbuffer,
         z    = zbuffer_base[0];
         dzdx = zbuffer_base[1];
         dzde = zbuffer_base[2];
-        dzdy = zbuffer_base[3];
     }
 
     xh <<= 2;  xm <<= 2;  xl <<= 2;
     r <<= 2;  g <<= 2;  b <<= 2;  a <<= 2;
     dsde >>= 2;  dtde >>= 2;  dsdx >>= 2;  dtdx >>= 2;
-    dzdx >>= 2;  dzde >>= 2;  dzdy >>= 2;
-    dwdx >>= 2;  dwde >>= 2;  dwdy >>= 2;
+    dzdx >>= 2;  dzde >>= 2;
+    dwdx >>= 2;  dwde >>= 2;
 
 
     // #define tile rdpTiles[tilenum]

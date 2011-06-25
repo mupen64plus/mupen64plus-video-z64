@@ -30,14 +30,6 @@ static const char *saRGBText[] =
     "0",                  "0",                    "0",                    "0"
 };
 
-static const char *sbRGBText[] =
-{
-    "PREV",               "TEXEL0",               "TEXEL1",               "PRIM", 
-    "SHADE",              "ENV",                  "CENTER",               "K4",
-    "0",                  "0",                    "0",                    "0",
-    "0",                  "0",                    "0",                    "0"
-};
-
 static const char *mRGBText[] =
 {
     "PREV",               "TEXEL0",               "TEXEL1",               "PRIM", 
@@ -87,7 +79,6 @@ const static char * bAText[2][4] = { {"PREVA", "FOGA", "SHADEA", "0"},
 char * rglCombiner2String(rdpState_t & state)
 {
     rdpOtherModes_t om = state.otherModes;
-    rdpCombineModes_t cm = state.combineModes;
     int cycle = RDP_GETOM_CYCLE_TYPE(om);
     static char res[256];
     char * p = res;

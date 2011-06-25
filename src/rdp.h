@@ -85,8 +85,7 @@ struct rdpTexRect_t {
     int16_t dsdx, dtdy;                 // 5.10 fixed-point
 };
 
-static const char *rdpImageFormats[] =
-{ "RGBA", "YUV", "CI", "IA", "I", "???", "???", "???" };
+extern const char *rdpImageFormats[];
 
 // TODO put ct ... palette in a bitfield
 struct rdpTile_t {

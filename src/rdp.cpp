@@ -24,6 +24,9 @@
 
 #include <string.h>
 
+const char *rdpImageFormats[] =
+{ "RGBA", "YUV", "CI", "IA", "I", "???", "???", "???" };
+
 rdpState_t rdpState;
 uint32_t   rdpChanged;
 //rdpColor_t rdpTlut[1024];
