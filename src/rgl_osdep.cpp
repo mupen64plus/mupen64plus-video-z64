@@ -93,22 +93,3 @@ void rglCloseScreen()
     rglClose();
     CoreVideo_Quit();
 }
-
-EXPORT void CALL ChangeWindow (void)
-{
-    if (rglNextStatus == RGL_STATUS_CLOSED || rglStatus == RGL_STATUS_CLOSED)
-        return;
-    switch (rglStatus) {
-    case RGL_STATUS_WINDOWED:
-        rglNextStatus = RGL_STATUS_FULLSCREEN;
-        break;
-    case RGL_STATUS_FULLSCREEN:
-        rglNextStatus = RGL_STATUS_WINDOWED;
-        break;
-    }
-    //  wanted_fullscreen = !fullscreen;
-    //   rglCloseScreen();
-    //   fullscreen = !fullscreen;
-    //   rglOpenScreen();
-}
-
