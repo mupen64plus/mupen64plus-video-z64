@@ -112,7 +112,6 @@ ifeq ($(ARCH_DETECTED), 64BITS_32)
   endif
   CFLAGS += -m32
   LDFLAGS += -Wl,-m32 -Wl,-m,elf_i386
-  LDLIBS += -ldl
 endif
 
 # set special flags per-system
@@ -132,6 +131,9 @@ ifeq ($(OS), OSX)
       LDLIBS += -ldl
     endif
   endif
+endif
+ifeq ($(OS), LINUX)
+  LDLIBS += -ldl
 endif
 ifeq ($(OS), FREEBSD)
   LDLIBS += -lc
