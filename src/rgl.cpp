@@ -344,7 +344,7 @@ int rglUseTile(rglTile_t & tile, float & ds, float & dt, float & ss, float & st)
         ds = ss - ds;
         dt = st - dt;
 
-        DUMP("texture fb %x shift %g x %g (scale %g x %g) tile %d x %d (sl %d tl %d)\n",
+        DUMP("texture fb %p shift %g x %g (scale %g x %g) tile %d x %d (sl %d tl %d)\n",
             &hbuf, ds, dt, ss, st, tile.w, tile.h,
             tile.sl, tile.tl);
     } else {
@@ -435,7 +435,7 @@ void rglPrepareFramebuffer(rglRenderBuffer_t & buffer)
             rglDeleteRenderBuffer(buffer);
     }
 
-    DUMP("Render buffer %x at %x --> %x\n", &buffer,
+    DUMP("Render buffer %p at %x --> %x\n", &buffer,
         buffer.addressStart, buffer.addressStop);
 
     if (!buffer.fbid) {
@@ -605,7 +605,7 @@ void rglRenderChunks(int upto)
         if (lastBuffer != &buffer)
             rglPrepareFramebuffer(buffer);
 
-        DUMP("Buffer %x at %x area %d -> %d x %d -> %d\n",
+        DUMP("Buffer %p at %x area %d -> %d x %d -> %d\n",
             &buffer, buffer.addressStart,
             buffer.area.xh>>2, buffer.area.xl>>2,
             buffer.area.yh>>2, buffer.area.yl>>2);

@@ -604,7 +604,7 @@ case 0: // c
     break;
 case 1: // f
     LOGERROR("Unsupported src color : FRAG\n");
-    LOGERROR(rglCombiner2String(state));
+    LOGERROR("%s", rglCombiner2String(state));
     break;
 case 2: // b
     p += sprintf(
@@ -641,7 +641,7 @@ case 3:
                 c->dstBlend = dst;
             } else {
                 LOGERROR("Unsuported blender :\n");
-                LOGERROR(rglCombiner2String(state));
+                LOGERROR("%s", rglCombiner2String(state));
             }
         }
         else

@@ -604,7 +604,7 @@ GL_MIRROR_CLAMP_TO_EDGE_EXT : GL_MIRRORED_REPEAT;
         }
 
         if (packed) {
-            DUMP("loading texture %dx%d fmt %s size %x (%x %x %x %x)\n", tile.w, tile.h, rdpImageFormats[tile.format], tile.size, glfmt, glpixfmt, packed, ptr);
+            DUMP("loading texture %dx%d fmt %s size %x (%x %x %x %p)\n", tile.w, tile.h, rdpImageFormats[tile.format], tile.size, glfmt, glpixfmt, packed, ptr);
             //     printf("cycle type = %d\n", chunk.rdpState.otherModes.cycle_type);
             if (!glpixfmt)
                 glpixfmt = glfmt;
