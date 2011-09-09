@@ -214,7 +214,6 @@ extern "C" {
             return M64ERR_INCOMPATIBLE;
         }
 
-        CoreVideo_Init();
         rglReadSettings();
 
         return M64ERR_SUCCESS;

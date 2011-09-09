@@ -54,6 +54,10 @@ void rglSwapBuffers()
 
 int rglOpenScreen()
 {
+    if (CoreVideo_Init() != M64ERR_SUCCESS) {
+        rdp_log(M64MSG_ERROR, "Could not initialize video.");
+        return 0;
+    }
     if (rglStatus == RGL_STATUS_WINDOWED) {
         screen_width = rglSettings.resX;
         screen_height = rglSettings.resY;
