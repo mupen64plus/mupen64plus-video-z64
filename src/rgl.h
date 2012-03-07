@@ -68,7 +68,7 @@ struct rglSettings_t {
 };
 
 extern rglSettings_t rglSettings;
-extern void (*render_callback)();
+extern void (*render_callback)(int);
 
 struct rglDepthBuffer_t {
     uint32_t address;

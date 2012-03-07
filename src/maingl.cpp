@@ -29,13 +29,13 @@
 #define PLUGIN_VERSION           0x016304
 #define VIDEO_PLUGIN_API_VERSION 0x020000
 #define CONFIG_API_VERSION       0x020000
-#define VIDEXT_API_VERSION       0x020000
+#define VIDEXT_API_VERSION       0x020100
 
 #define VERSION_PRINTF_SPLIT(x) (((x) >> 16) & 0xffff), (((x) >> 8) & 0xff), ((x) & 0xff)
 
 GFX_INFO gfx;
 
-void (*render_callback)() = NULL;
+void (*render_callback)(int) = NULL;
 static void (*l_DebugCallback)(void *, int, const char *) = NULL;
 static void *l_DebugCallContext = NULL;
 
@@ -247,7 +247,7 @@ extern "C" {
         return M64ERR_SUCCESS;
     }
 
-    EXPORT void CALL SetRenderingCallback(void (*callback)())
+    EXPORT void CALL SetRenderingCallback(void (*callback)(int))
     {
         render_callback = callback;
     }

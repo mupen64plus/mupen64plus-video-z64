@@ -46,8 +46,10 @@ int viewport_offset;
 
 void rglSwapBuffers()
 {
+	//TODO: if screenshot capabilities are ever implemented, replace the
+	//hard-coded 1 with a value indicating whether the screen has been redrawn
     if (render_callback != NULL)
-        render_callback();
+        render_callback(1);
     CoreVideo_GL_SwapBuffers();
     return;
 }
