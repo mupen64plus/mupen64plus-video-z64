@@ -369,7 +369,7 @@ void rglPrepareFramebuffer(rglRenderBuffer_t & buffer)
     if (buffer.area.xh == 8192)
         return;
 
-    GLuint restoreId = 0, restoreFbid;
+    GLuint restoreId = 0, restoreFbid = 0;
     float d2 = -1;
     float d = 0;
     float restoreW = buffer.width+d2, restoreH = buffer.height+d2;
