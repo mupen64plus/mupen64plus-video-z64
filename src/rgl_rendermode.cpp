@@ -212,7 +212,7 @@ void rglSetCombiner(rglRenderChunk_t & chunk, int format)
 
     rdpState_t & state = chunk.rdpState;
     static rglCombiner_t * c;
-    int cycle = RDP_GETOM_CYCLE_TYPE(state.otherModes);
+    uint32_t cycle = RDP_GETOM_CYCLE_TYPE(state.otherModes);
     int i; //, fmt, size;
     char * p;
     const char * alphaTest;

@@ -122,14 +122,14 @@ struct rdpCombineModes_t {
 #define RDP_GETCM_SUB_B_A1(cm)          (((cm).w2 >>  3) & 0x7)
 #define RDP_GETCM_ADD_A1(cm)            (((cm).w2 >>  0) & 0x7)
 
-#define RDP_COMBINE_MASK11 ((0xf<<20)|(0x1f<<15)|(0x7<<12)|(0x7<<9))
-#define RDP_COMBINE_MASK12 ((0xf<<28)|(0x7<<15)|(0x7<<12)|(0x7<<9))
-#define RDP_COMBINE_MASK21 ((0xf<<5)|(0x1f<<0))
-#define RDP_COMBINE_MASK22 ((0xf<<24)|(0x7<<21)|(0x7<<18)|(0x7<<6)|(0x7<<3)|(0x7<<0))
+#define RDP_COMBINE_MASK11 ((0xfu<<20)|(0x1fu<<15)|(0x7u<<12)|(0x7u<<9))
+#define RDP_COMBINE_MASK12 ((0xfu<<28)|(0x7u<<15)|(0x7u<<12)|(0x7u<<9))
+#define RDP_COMBINE_MASK21 ((0xfu<<5)|(0x1fu<<0))
+#define RDP_COMBINE_MASK22 ((0xfu<<24)|(0x7u<<21)|(0x7u<<18)|(0x7u<<6)|(0x7u<<3)|(0x7u<<0))
 
 static const rdpCombineModes_t rdpCombineMasks[4] = {
     { ~RDP_COMBINE_MASK21, ~RDP_COMBINE_MASK22 },
-    { ~0, ~0 },
+    { ~0u, ~0u },
     { ~(RDP_COMBINE_MASK11|RDP_COMBINE_MASK21), ~(RDP_COMBINE_MASK12|RDP_COMBINE_MASK22) },
     { ~(RDP_COMBINE_MASK11|RDP_COMBINE_MASK21), ~(RDP_COMBINE_MASK12|RDP_COMBINE_MASK22) },
 };
@@ -181,14 +181,14 @@ struct rdpOtherModes_t {
 #define RDP_GETOM_DITHER_ALPHA_EN(om)           (((om).w2 & 0x02) ? 1 : 0)
 #define RDP_GETOM_ALPHA_COMPARE_EN(om)          (((om).w2 & 0x01) ? 1 : 0)
 
-#define RDP_BLEND_MASK1 ((3<<30)|(3<<26)|(3<<22)|(3<<18))
-#define RDP_BLEND_MASK2 ((3<<28)|(3<<24)|(3<<20)|(3<<16))
+#define RDP_BLEND_MASK1 ((3u<<30)|(3u<<26)|(3u<<22)|(3u<<18))
+#define RDP_BLEND_MASK2 ((3u<<28)|(3u<<24)|(3u<<20)|(3u<<16))
 
 static const rdpOtherModes_t rdpBlendMasks[4] = {
-    { ~0, ~RDP_BLEND_MASK2 },
-    { ~0, ~0 },
-    { ~0, ~(RDP_BLEND_MASK1|RDP_BLEND_MASK2) },
-    { ~0, ~(RDP_BLEND_MASK1|RDP_BLEND_MASK2) },
+    { ~0u, ~RDP_BLEND_MASK2 },
+    { ~0u, ~0u },
+    { ~0u, ~(RDP_BLEND_MASK1|RDP_BLEND_MASK2) },
+    { ~0u, ~(RDP_BLEND_MASK1|RDP_BLEND_MASK2) },
 };
 
 struct rdpState_t {
