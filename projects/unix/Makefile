@@ -119,8 +119,8 @@ CXXFLAGS += -fvisibility-inlines-hidden
 LDFLAGS += $(SHARED)
 
 # default configuration programs
-SDL_CONFIG ?= sdl-config
-PKG_CONFIG ?= pkg-config
+SDL_CONFIG = $(CROSS_COMPILE)sdl-config
+PKG_CONFIG = $(CROSS_COMPILE)pkg-config
 
 # Since we are building a shared library, we must compile with -fPIC on some architectures
 # On 32-bit x86 systems we do not want to use -fPIC because we don't have to and it has a big performance penalty on this arch
@@ -234,8 +234,8 @@ endif
 endif
 
 # set base program pointers and flags
-CC       ?= gcc
-CXX      ?= g++
+CC        = $(CROSS_COMPILE)gcc
+CXX       = $(CROSS_COMPILE)g++
 RM       ?= rm -f
 INSTALL  ?= install
 MKDIR ?= mkdir -p
