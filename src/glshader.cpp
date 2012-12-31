@@ -23,9 +23,17 @@
 #include <stdio.h>
 #include <string.h>
 #include "rgl_assert.h"
-#include <GL/glew.h>
+#include <glew.h>
+#if defined(__MACOSX__)
+#include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
+#elif defined(__MACOS__)
+#include <gl.h>
+#include <glext.h>
+#else
 #include <GL/gl.h>
 #include <GL/glext.h>
+#endif
 #include "glshader.h"
 
 static void printInfoLog(GLhandleARB obj, const char * src)
