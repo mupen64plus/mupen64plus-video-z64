@@ -22,7 +22,7 @@
 #include "rdp.h"
 #include "rgl.h"
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 void rglRenderMode(rglRenderChunk_t & chunk)
 {

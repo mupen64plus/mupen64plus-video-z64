@@ -22,7 +22,7 @@
 #include "rdp.h"
 #include "rgl.h"
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 rglTextureHead_t freeTextures;
 rglTextureHead_t texturesByCrc[256];

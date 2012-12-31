@@ -22,7 +22,7 @@
 #include "rdp.h"
 #include "rgl.h"
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 SDL_Surface *sdl_Screen;
 int viewportOffset;

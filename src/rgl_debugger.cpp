@@ -133,7 +133,7 @@ char * rglCombiner2String(rdpState_t & state)
 
 #ifdef RDP_DEBUG
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 //#include <IL/il.h>
 #include <assert.h>
 

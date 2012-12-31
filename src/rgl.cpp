@@ -79,7 +79,7 @@
 #include "rdp.h"
 #include "rgl.h"
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 //#define NOFBO
 #define ZTEX

@@ -22,7 +22,7 @@
 #include "rdp.h"
 #include "rgl.h"
 #include "osal_dynamiclib.h"
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 #define THREADED
 
