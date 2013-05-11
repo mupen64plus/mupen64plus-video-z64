@@ -125,9 +125,6 @@ CFLAGS += $(OPTFLAGS) $(WARNFLAGS) -ffast-math -fno-strict-aliasing -fvisibility
 CXXFLAGS += -fvisibility-inlines-hidden
 LDFLAGS += $(SHARED)
 
-# default configuration programs
-PKG_CONFIG = $(CROSS_COMPILE)pkg-config
-
 # Since we are building a shared library, we must compile with -fPIC on some architectures
 # On 32-bit x86 systems we do not want to use -fPIC because we don't have to and it has a big performance penalty on this arch
 ifeq ($(PIC), 1)
@@ -187,31 +184,39 @@ ifeq ($(OS), FREEBSD)
 endif
 
 # test for essential build dependencies
-ifeq ($(shell which $(PKG_CONFIG) 2>/dev/null),)
-  $(error $(PKG_CONFIG) not found)
+ifeq ($(origin PKG_CONFIG), undefined)
+  PKG_CONFIG = $(CROSS_COMPILE)pkg-config
+  ifeq ($(shell which $(PKG_CONFIG) 2>/dev/null),)
+    $(error $(PKG_CONFIG) not found)
+  endif
 endif
-ifeq ($(shell $(PKG_CONFIG) --modversion glew 2>/dev/null),)
-  $(error No GLEW development libraries found!)
+
+ifeq ($(origin GLEW_CFLAGS) $(origin GLEW_LDLIBS), undefined undefined)
+  ifeq ($(shell $(PKG_CONFIG) --modversion glew 2>/dev/null),)
+    (error No GLEW development libraries found!)
+  endif
+  GLEW_CFLAGS += $(shell $(PKG_CONFIG) --cflags glew)
+  GLEW_LDLIBS +=  $(shell $(PKG_CONFIG) --libs glew)
 endif
-CFLAGS += $(shell $(PKG_CONFIG) --cflags glew)
-LDLIBS += $(shell $(PKG_CONFIG) --libs glew)
+CFLAGS += $(GLEW_CFLAGS)
+LDLIBS += $(GLEW_LDLIBS)
 
 # search for OpenGL libraries
-GL_LIBS=
 ifeq ($(OS), OSX)
-  GL_LIBS = -framework OpenGL
+  GL_LDLIBS = -framework OpenGL
 endif
 ifeq ($(OS), MINGW)
-  GL_LIBS = -lopengl32
+  GL_LDLIBS = -lopengl32
 endif
-ifeq ("$(GL_LIBS)", "")
+ifeq ($(origin GL_CFLAGS) $(origin GL_LDLIBS), undefined undefined)
   ifeq ($(shell $(PKG_CONFIG) --modversion gl 2>/dev/null),)
     $(error No OpenGL development libraries found!)
   endif
-  CFLAGS += $(shell $(PKG_CONFIG) --cflags gl)
-  GL_LIBS = $(shell $(PKG_CONFIG) --libs gl)
+  GL_CFLAGS += $(shell $(PKG_CONFIG) --cflags gl)
+  GL_LDLIBS +=  $(shell $(PKG_CONFIG) --libs gl)
 endif
-LDLIBS += $(GL_LIBS)
+CFLAGS += $(GL_CFLAGS)
+LDLIBS += $(GL_LDLIBS)
 
 # test for presence of SDL
 ifeq ($(origin SDL_CFLAGS) $(origin SDL_LDLIBS), undefined undefined)
