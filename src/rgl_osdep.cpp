@@ -34,6 +34,7 @@ extern ptr_VidExt_ListFullscreenModes   CoreVideo_ListFullscreenModes;
 extern ptr_VidExt_SetVideoMode          CoreVideo_SetVideoMode;
 extern ptr_VidExt_SetCaption            CoreVideo_SetCaption;
 extern ptr_VidExt_ToggleFullScreen      CoreVideo_ToggleFullScreen;
+extern ptr_VidExt_ResizeWindow          CoreVideo_ResizeWindow;
 extern ptr_VidExt_GL_GetProcAddress     CoreVideo_GL_GetProcAddress;
 extern ptr_VidExt_GL_SetAttribute       CoreVideo_GL_SetAttribute;
 extern ptr_VidExt_GL_SwapBuffers        CoreVideo_GL_SwapBuffers;
@@ -82,7 +83,7 @@ int rglOpenScreen()
         return 0;
     }
 
-    if (CoreVideo_SetVideoMode(screen_width, screen_height, 32, screen_mode) != M64ERR_SUCCESS)
+    if (CoreVideo_SetVideoMode(screen_width, screen_height, 32, screen_mode, (m64p_video_flags) 0) != M64ERR_SUCCESS)
     {
         rdp_log(M64MSG_ERROR, "Could not set video mode.");
         return 0;
