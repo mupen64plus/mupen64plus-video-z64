@@ -123,7 +123,11 @@ void rdpCreateThread()
     }
     if (!rdpThread) {
         LOG("Creating rdp thread\n");
+#if SDL_VERSION_ATLEAST(2,0,0)
+        rdpThread = SDL_CreateThread(rdpThreadFunc, "z64rdp", 0);
+#else
         rdpThread = SDL_CreateThread(rdpThreadFunc, 0);
+#endif
     }
 }
 #endif
