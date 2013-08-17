@@ -193,7 +193,7 @@ endif
 
 ifeq ($(origin GLEW_CFLAGS) $(origin GLEW_LDLIBS), undefined undefined)
   ifeq ($(shell $(PKG_CONFIG) --modversion glew 2>/dev/null),)
-    (error No GLEW development libraries found!)
+    $(error No GLEW development libraries found!)
   endif
   GLEW_CFLAGS += $(shell $(PKG_CONFIG) --cflags glew)
   GLEW_LDLIBS +=  $(shell $(PKG_CONFIG) --libs glew)
