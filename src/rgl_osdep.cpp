@@ -20,7 +20,10 @@
 **/
 
 #include <SDL.h>
+#include <stddef.h>
 
+#include "m64p_types.h"
+#include "m64p_vidext.h"
 #include "rdp.h"
 #include "rgl.h"
 

@@ -21,6 +21,7 @@
 
 #include <string.h>
 
+#include "m64p_plugin.h"
 #include "rdp.h"
 #include "rgl.h"
 

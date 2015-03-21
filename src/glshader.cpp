@@ -24,6 +24,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "m64p_types.h"
+#include "rdp.h"
 #include "rgl_assert.h"
 #if defined(__MACOSX__)
 #include <OpenGL/gl.h>

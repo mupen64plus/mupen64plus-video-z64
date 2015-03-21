@@ -19,6 +19,8 @@
  *
 **/
 
+#include <stdio.h>
+
 #include "rdp.h"
 #include "rgl.h"
 

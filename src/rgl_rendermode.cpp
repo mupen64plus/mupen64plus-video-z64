@@ -20,9 +20,15 @@
 **/
 
 #include <SDL.h>
+#include <glew.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
 
+#include "glshader.h"
 #include "rdp.h"
 #include "rgl.h"
+#include "rgl_assert.h"
 
 void rglRenderMode(rglRenderChunk_t & chunk)
 {

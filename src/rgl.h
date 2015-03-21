@@ -23,7 +23,9 @@
 #define _RGL_H_
 
 #include <glew.h>
+#include <stdint.h>
 
+#include "m64p_plugin.h"
 #include "queue.h"
 #include "rdp.h"
 #include "rgl_assert.h"
@@ -86,6 +88,7 @@ extern rglDepthBuffer_t zBuffers[MAX_DEPTH_BUFFERS];
 extern int nbZBuffers;
 
 struct rglRenderBuffer_t;
+
 struct rglDepthSection_t {
     rglRenderBuffer_t * buffer;
     int chunkId;

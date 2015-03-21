@@ -20,9 +20,12 @@
 **/
 
 #include <SDL.h>
+#include <stdint.h>
+#include <sys/types.h>
 
 #include "rdp.h"
 #include "rgl.h"
+#include "rgl_assert.h"
 
 inline float _zscale(uint16_t z)
 {
