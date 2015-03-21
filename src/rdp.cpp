@@ -19,10 +19,10 @@
  *
 **/
 
+#include <string.h>
+
 #include "rdp.h"
 #include "rgl.h"
-
-#include <string.h>
 
 const char *rdpImageFormats[] =
 { "RGBA", "YUV", "CI", "IA", "I", "???", "???", "???" };

@@ -22,11 +22,11 @@
 #ifndef _RGL_H_
 #define _RGL_H_
 
-#include "queue.h"
-#include "rgl_assert.h"
-#include "rdp.h"
-
 #include <glew.h>
+
+#include "queue.h"
+#include "rdp.h"
+#include "rgl_assert.h"
 #if defined(__MACOSX__)
 #include <OpenGL/gl.h>
 #elif defined(__MACOS__)
@@ -39,9 +39,9 @@
 //#include <IL/il.h>
 #endif
 
-#include "glshader.h"
-
 #include <limits.h> //for PATH_MAX
+
+#include "glshader.h"
 
 #define DWORD unsigned int
 extern GFX_INFO gfx;

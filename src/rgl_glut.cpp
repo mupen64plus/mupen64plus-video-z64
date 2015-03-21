@@ -19,9 +19,8 @@
  *
 **/
 
-#include <string.h>
-
 #include <SDL.h>
+#include <string.h>
 
 #include "rgl_glut.h"
 

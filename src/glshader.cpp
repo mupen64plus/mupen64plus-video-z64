@@ -19,11 +19,12 @@
  *
 **/
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include "rgl_assert.h"
 #include <glew.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "rgl_assert.h"
 #if defined(__MACOSX__)
 #include <OpenGL/gl.h>
 #include <OpenGL/glext.h>

@@ -76,10 +76,10 @@
  *
 **/
 
+#include <SDL.h>
+
 #include "rdp.h"
 #include "rgl.h"
-
-#include <SDL.h>
 
 //#define NOFBO
 #define ZTEX

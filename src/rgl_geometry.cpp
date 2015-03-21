@@ -19,10 +19,10 @@
  *
 **/
 
+#include <SDL.h>
+
 #include "rdp.h"
 #include "rgl.h"
-
-#include <SDL.h>
 
 inline float _zscale(uint16_t z)
 {

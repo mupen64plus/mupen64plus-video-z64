@@ -19,10 +19,11 @@
  *
 **/
 
+#include <SDL.h>
+
+#include "osal_dynamiclib.h"
 #include "rdp.h"
 #include "rgl.h"
-#include "osal_dynamiclib.h"
-#include <SDL.h>
 
 #define THREADED
 
