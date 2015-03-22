@@ -19,10 +19,16 @@
  *
 **/
 
+#include <SDL.h>
+#include <glew.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+
+#include "glshader.h"
 #include "rdp.h"
 #include "rgl.h"
-
-#include <SDL.h>
+#include "rgl_assert.h"
 
 void rglRenderMode(rglRenderChunk_t & chunk)
 {
@@ -669,10 +675,6 @@ case 3:
         );
 
     rglAssert(p < src+sizeof(src));
-
-#ifdef RGL_EXACT_BLEND
-    //printf("Creating combiner : \n%s", src);
-#endif
 
     c->shader = rglCreateShader(
         "void main()                                                    \n"

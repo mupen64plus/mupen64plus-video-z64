@@ -19,10 +19,16 @@
  *
 **/
 
+#include <SDL.h>
+#include <glew.h>
+#include <stdint.h>
+#include <string.h>
+
+#include "m64p_plugin.h"
+#include "queue.h"
 #include "rdp.h"
 #include "rgl.h"
-
-#include <SDL.h>
+#include "rgl_assert.h"
 
 rglTextureHead_t freeTextures;
 rglTextureHead_t texturesByCrc[256];

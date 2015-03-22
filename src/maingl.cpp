@@ -19,10 +19,19 @@
  *
 **/
 
+#include <SDL.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <string.h>
+
+#include "m64p_common.h"
+#include "m64p_config.h"
+#include "m64p_plugin.h"
+#include "m64p_types.h"
+#include "m64p_vidext.h"
+#include "osal_dynamiclib.h"
 #include "rdp.h"
 #include "rgl.h"
-#include "osal_dynamiclib.h"
-#include <SDL.h>
 
 #define THREADED
 

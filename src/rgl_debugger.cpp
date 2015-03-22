@@ -19,6 +19,8 @@
  *
 **/
 
+#include <stdio.h>
+
 #include "rdp.h"
 #include "rgl.h"
 
@@ -133,11 +135,10 @@ char * rglCombiner2String(rdpState_t & state)
 
 #ifdef RDP_DEBUG
 
+#include <FTGLTextureFont.h>
 #include <SDL.h>
 //#include <IL/il.h>
 #include <assert.h>
-
-#include <FTGLTextureFont.h>
 
 #define FONT "LucidaTypewriterRegular.ttf"
 #define SMALLFONT "LucidaTypewriterRegular.ttf"

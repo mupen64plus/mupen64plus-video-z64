@@ -28,11 +28,11 @@
 #include <string.h>
 
 #define M64P_PLUGIN_PROTOTYPES 1
-#include "m64p_types.h"
 #include "m64p_common.h"
-#include "m64p_plugin.h"
-#include "m64p_vidext.h"
 #include "m64p_config.h"
+#include "m64p_plugin.h"
+#include "m64p_types.h"
+#include "m64p_vidext.h"
 
 #define LSB_FIRST 1 // TODO : check for platform
 #ifdef LSB_FIRST

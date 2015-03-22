@@ -22,11 +22,13 @@
 #ifndef _RGL_H_
 #define _RGL_H_
 
-#include "queue.h"
-#include "rgl_assert.h"
-#include "rdp.h"
-
 #include <glew.h>
+#include <stdint.h>
+
+#include "m64p_plugin.h"
+#include "queue.h"
+#include "rdp.h"
+#include "rgl_assert.h"
 #if defined(__MACOSX__)
 #include <OpenGL/gl.h>
 #elif defined(__MACOS__)
@@ -39,9 +41,9 @@
 //#include <IL/il.h>
 #endif
 
-#include "glshader.h"
-
 #include <limits.h> //for PATH_MAX
+
+#include "glshader.h"
 
 #define DWORD unsigned int
 extern GFX_INFO gfx;
@@ -86,6 +88,7 @@ extern rglDepthBuffer_t zBuffers[MAX_DEPTH_BUFFERS];
 extern int nbZBuffers;
 
 struct rglRenderBuffer_t;
+
 struct rglDepthSection_t {
     rglRenderBuffer_t * buffer;
     int chunkId;

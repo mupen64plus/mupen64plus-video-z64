@@ -19,10 +19,13 @@
  *
 **/
 
+#include <SDL.h>
+#include <stddef.h>
+
+#include "m64p_types.h"
+#include "m64p_vidext.h"
 #include "rdp.h"
 #include "rgl.h"
-
-#include <SDL.h>
 
 SDL_Surface *sdl_Screen;
 int viewportOffset;

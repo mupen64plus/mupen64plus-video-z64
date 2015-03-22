@@ -19,6 +19,8 @@
  *
 **/
 
+#include "m64p_config.h"
+#include "m64p_types.h"
 #include "rdp.h"
 #include "rgl.h"
 

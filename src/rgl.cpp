@@ -76,10 +76,15 @@
  *
 **/
 
+#include <SDL.h>
+#include <glew.h>
+#include <stdio.h>
+#include <sys/types.h>
+
+#include "m64p_types.h"
 #include "rdp.h"
 #include "rgl.h"
-
-#include <SDL.h>
+#include "rgl_assert.h"
 
 //#define NOFBO
 #define ZTEX

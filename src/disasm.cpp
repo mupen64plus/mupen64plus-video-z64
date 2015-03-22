@@ -19,8 +19,9 @@
  *
 **/
 
-#include "z64.h"
 #include <stdio.h>
+
+#include "z64.h"
 
 static const char *image_format[] = { "RGBA", "YUV", "CI", "IA", "I", "???", "???", "???" };
 static const char *image_size[] = { "4-bit", "8-bit", "16-bit", "32-bit" };
