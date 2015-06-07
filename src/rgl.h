@@ -22,7 +22,7 @@
 #ifndef _RGL_H_
 #define _RGL_H_
 
-#include <glew.h>
+#include <GL/glew.h>
 #include <stdint.h>
 
 #include "m64p_plugin.h"
