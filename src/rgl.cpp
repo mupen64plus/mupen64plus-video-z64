@@ -77,7 +77,7 @@
 **/
 
 #include <SDL.h>
-#include <glew.h>
+#include <GL/glew.h>
 #include <stdio.h>
 #include <sys/types.h>
 
