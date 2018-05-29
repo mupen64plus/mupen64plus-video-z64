@@ -433,43 +433,47 @@ GL_MIRROR_CLAMP_TO_EDGE_EXT : GL_MIRRORED_REPEAT;
     if ((tile.ct || !tile.mask_t) && cj >= cliph) cj = cliph-1;           \
 
         switch (tile.size) {
-    case 3:
-        for (j=0; j<oh; j++)
-            for (i=0; i<ow; i++) {
-                CLAMP;
-                uint32_t *tc = (uint32_t*)from;
-                int taddr = ((tile.tmem/4) + ((cj) * (line/4)) + (ci)) ^ ((cj & indirect) ? XOR_SWAP_DWORD : 0);
-                uint32_t a = tc[taddr/*&0xfff*/];
-                //uint32_t a = *(uint32_t *)&from[j*line + i*4 + tile.tmem ^ ((j&1)<<1) ^ XOR_SWAP_DWORD];
-                *(uint32_t *)&ptr[(tile.h-1-j)*tile.w*4 + (tile.w-1-i)*4] = a;
+        case 3:
+            for (j=0; j<oh; j++) {
+                for (i=0; i<ow; i++) {
+                    CLAMP;
+                    uint32_t *tc = (uint32_t*)from;
+                    int taddr = ((tile.tmem/4) + ((cj) * (line/4)) + (ci)) ^ ((cj & indirect) ? XOR_SWAP_DWORD : 0);
+                    uint32_t a = tc[taddr/*&0xfff*/];
+                    //uint32_t a = *(uint32_t *)&from[j*line + i*4 + tile.tmem ^ ((j&1)<<1) ^ XOR_SWAP_DWORD];
+                    *(uint32_t *)&ptr[(tile.h-1-j)*tile.w*4 + (tile.w-1-i)*4] = a;
+                }
             }
             break;
-    case 2:
-        for (j=0; j<oh; j++)
-            for (i=0; i<ow; i++) {
-                CLAMP;
-                uint16_t *tc = (uint16_t*)from;
-                int taddr = ((tile.tmem/2) + ((cj) * (line/2)) + (ci)) ^ ((cj & indirect) ? XOR_SWAP_WORD : 0);
-                uint16_t a = tc[(taddr ^ WORD_ADDR_XOR)/*&0x1fff*/];
-                //           uint16_t a = *(uint16_t *)&from[j*line + i*2 + tile.tmem ^ ((j&1)<<2) ^ XOR_SWAP_WORD];
-                *(uint16_t *)&ptr[(tile.h-1-j)*tile.w*2 + (tile.w-1-i)*2] = a;
+        case 2:
+            for (j=0; j<oh; j++) {
+                for (i=0; i<ow; i++) {
+                    CLAMP;
+                    uint16_t *tc = (uint16_t*)from;
+                    int taddr = ((tile.tmem/2) + ((cj) * (line/2)) + (ci)) ^ ((cj & indirect) ? XOR_SWAP_WORD : 0);
+                    uint16_t a = tc[(taddr ^ WORD_ADDR_XOR)/*&0x1fff*/];
+                    //           uint16_t a = *(uint16_t *)&from[j*line + i*2 + tile.tmem ^ ((j&1)<<2) ^ XOR_SWAP_WORD];
+                    *(uint16_t *)&ptr[(tile.h-1-j)*tile.w*2 + (tile.w-1-i)*2] = a;
+                }
             }
             break;
-    case 1:
-        for (j=0; j<oh; j++)
-            for (i=0; i<ow; i++) {
-                CLAMP;
-                uint8_t a = *(uint8_t *)&from[((cj*line + ci + tile.tmem) ^ ((cj & indirect)<<2) ^ XOR_SWAP_BYTE)/*&0xfff*/];
-                *(uint8_t *)&ptr[(tile.h-1-j)*tile.w + (tile.w-1-i)] = a;
+        case 1:
+            for (j=0; j<oh; j++) {
+                for (i=0; i<ow; i++) {
+                    CLAMP;
+                    uint8_t a = *(uint8_t *)&from[((cj*line + ci + tile.tmem) ^ ((cj & indirect)<<2) ^ XOR_SWAP_BYTE)/*&0xfff*/];
+                    *(uint8_t *)&ptr[(tile.h-1-j)*tile.w + (tile.w-1-i)] = a;
+                }
             }
             break;
-    case 0:
-        // FIXME
-        for (j=0; j<tile.h; j++)
-            for (i=0; i<tile.w; i+=2) {
-                CLAMP;
-                uint8_t a = *(uint8_t *)&from[((cj*line + ci/2 + tile.tmem) ^ ((cj & indirect)<<2) ^ XOR_SWAP_BYTE)/*&0x3fff*/];
-                *(uint8_t *)&ptr[(tile.h-1-j)*tile.w/2 + (tile.w/2-1-i/2)] = a; //(a>>4)|(a<<4);
+        case 0:
+            // FIXME
+            for (j=0; j<tile.h; j++) {
+                for (i=0; i<tile.w; i+=2) {
+                    CLAMP;
+                    uint8_t a = *(uint8_t *)&from[((cj*line + ci/2 + tile.tmem) ^ ((cj & indirect)<<2) ^ XOR_SWAP_BYTE)/*&0x3fff*/];
+                    *(uint8_t *)&ptr[(tile.h-1-j)*tile.w/2 + (tile.w/2-1-i/2)] = a; //(a>>4)|(a<<4);
+                }
             }
             break;
         }
@@ -489,124 +493,124 @@ GL_MIRROR_CLAMP_TO_EDGE_EXT : GL_MIRRORED_REPEAT;
         }
 
         switch (i) {
-    case RDP_FORMAT_CI: {
-        if (!RDP_GETOM_TLUT_TYPE(rdpState.otherModes)) {
+        case RDP_FORMAT_CI: {
+            if (!RDP_GETOM_TLUT_TYPE(rdpState.otherModes)) {
+                glfmt = GL_RGBA;
+                packed = GL_UNSIGNED_SHORT_5_5_5_1;
+            } else {
+                glfmt = GL_RGBA;
+                glpixfmt = GL_LUMINANCE_ALPHA;
+                //glfmt = GL_LUMINANCE_ALPHA;
+                packed = GL_UNSIGNED_BYTE;
+            }
+            switch (tile.size) {
+            case 0:
+                ptr = rglTmpTex;
+                for (i=0; i<tile.w*tile.h/2; i++) {
+                    uint16_t a = rdpTlut[((from[i]&0xf) + palette/* ^ WORD_ADDR_XOR*/)*4];
+                    uint16_t b = rdpTlut[((from[i]>>4) + palette/* ^ WORD_ADDR_XOR*/)*4];
+                    if (RDP_GETOM_TLUT_TYPE(rdpState.otherModes)) {
+                        a = (a>>8)|(a<<8);
+                        b = (b>>8)|(b<<8);
+                    }
+                    *(uint16_t *)&ptr[i*4] = a;
+                    *(uint16_t *)&ptr[i*4+2] = b;
+                }
+                break;
+            case 1:
+                ptr = rglTmpTex;
+                //rdpTlut[palette] = 0;
+                for (i=0; i<tile.w*tile.h; i++) {
+                    uint16_t a = rdpTlut[(from[i] + palette/* ^ WORD_ADDR_XOR*/)*4];
+                    if (RDP_GETOM_TLUT_TYPE(rdpState.otherModes))
+                        a = (a>>8)|(a<<8);
+                    *(uint16_t *)&ptr[i*2] = a;
+                }
+                break;
+            }
+            break;
+        }
+        case RDP_FORMAT_RGBA: {
             glfmt = GL_RGBA;
-            packed = GL_UNSIGNED_SHORT_5_5_5_1;
-        } else {
+            switch (tile.size) {
+            case 2:
+                //packed = GL_UNSIGNED_SHORT_4_4_4_4_REV;
+                packed = GL_UNSIGNED_SHORT_5_5_5_1;
+                break;
+            case 3:
+                packed = GL_UNSIGNED_INT_8_8_8_8;
+                break;
+            }
+            break;
+        }
+        case RDP_FORMAT_IA: {
             glfmt = GL_RGBA;
             glpixfmt = GL_LUMINANCE_ALPHA;
-            //glfmt = GL_LUMINANCE_ALPHA;
-            packed = GL_UNSIGNED_BYTE;
-        }
-        switch (tile.size) {
-    case 0:
-        ptr = rglTmpTex;
-        for (i=0; i<tile.w*tile.h/2; i++) {
-            uint16_t a = rdpTlut[((from[i]&0xf) + palette/* ^ WORD_ADDR_XOR*/)*4];
-            uint16_t b = rdpTlut[((from[i]>>4) + palette/* ^ WORD_ADDR_XOR*/)*4];
-            if (RDP_GETOM_TLUT_TYPE(rdpState.otherModes)) {
-                a = (a>>8)|(a<<8);
-                b = (b>>8)|(b<<8);
+            //if (tile.size == 0) line *= 2;
+            switch (tile.size) {
+            case 0: {
+                packed = GL_UNSIGNED_BYTE;
+                ptr = rglTmpTex;
+                for (i=0; i<tile.h*tile.w/2; i++) {
+                    uint32_t a = (from[i]&0xe0) >> 5;
+                    int8_t b = (from[i]&0x10) >> 4;
+                    ptr[i*4+2] = (a<<5) | (a<<2) | (a>>1);
+                    ptr[i*4+3] = -b;
+                    a = (from[i]&0xe) >> 1;
+                    b = (from[i]&0x1);
+                    ptr[i*4+0] = (a<<5) | (a<<2) | (a>>1);
+                    ptr[i*4+1] = -b;
+                }
+                break;
             }
-            *(uint16_t *)&ptr[i*4] = a;
-            *(uint16_t *)&ptr[i*4+2] = b;
-        }
-        break;
-    case 1:
-        ptr = rglTmpTex;
-        //rdpTlut[palette] = 0;
-        for (i=0; i<tile.w*tile.h; i++) {
-            uint16_t a = rdpTlut[(from[i] + palette/* ^ WORD_ADDR_XOR*/)*4];
-            if (RDP_GETOM_TLUT_TYPE(rdpState.otherModes))
-                a = (a>>8)|(a<<8);
-            *(uint16_t *)&ptr[i*2] = a;
-        }
-        break;
-        }
-        break;
-                        }
-    case RDP_FORMAT_RGBA: {
-        glfmt = GL_RGBA;
-        switch (tile.size) {
-    case 2:
-        //packed = GL_UNSIGNED_SHORT_4_4_4_4_REV;
-        packed = GL_UNSIGNED_SHORT_5_5_5_1;
-        break;
-    case 3:
-        packed = GL_UNSIGNED_INT_8_8_8_8;
-        break;
-        }
-        break;
-                          }
-    case RDP_FORMAT_IA: {
-        glfmt = GL_RGBA;
-        glpixfmt = GL_LUMINANCE_ALPHA;
-        //if (tile.size == 0) line *= 2;
-        switch (tile.size) {
-    case 0: {
-        packed = GL_UNSIGNED_BYTE;
-        ptr = rglTmpTex;
-        for (i=0; i<tile.h*tile.w/2; i++) {
-            uint32_t a = (from[i]&0xe0) >> 5;
-            int8_t b = (from[i]&0x10) >> 4;
-            ptr[i*4+2] = (a<<5) | (a<<2) | (a>>1);
-            ptr[i*4+3] = -b;
-            a = (from[i]&0xe) >> 1;
-            b = (from[i]&0x1);
-            ptr[i*4+0] = (a<<5) | (a<<2) | (a>>1);
-            ptr[i*4+1] = -b;
-        }
-        break;
+            case 1: {
+                packed = GL_UNSIGNED_BYTE;
+                ptr = rglTmpTex;
+                for (i=0; i<tile.h*tile.w; i++) {
+                    uint32_t a = from[i]&0xF0;
+                    a = a | (a>>4);
+                    ptr[i*2] = a | (a>>4);
+                    a = from[i]&0x0F;
+                    a = a | (a<<4);
+                    ptr[i*2+1] = a;
+                }
+                break;
             }
-    case 1: {
-        packed = GL_UNSIGNED_BYTE;
-        ptr = rglTmpTex;
-        for (i=0; i<tile.h*tile.w; i++) {
-            uint32_t a = from[i]&0xF0;
-            a = a | (a>>4);
-            ptr[i*2] = a | (a>>4);
-            a = from[i]&0x0F;
-            a = a | (a<<4);
-            ptr[i*2+1] = a;
-        }
-        break;
+            case 2:
+                packed = GL_UNSIGNED_BYTE;
+                ptr = rglTmpTex;
+                for (i=0; i<tile.h*tile.w*2; i+=2) {
+                    ptr[i] = from[i+1];
+                    ptr[i+1] = from[i];
+                }
+                break;
             }
-    case 2:
-        packed = GL_UNSIGNED_BYTE;
-        ptr = rglTmpTex;
-        for (i=0; i<tile.h*tile.w*2; i+=2) {
-            ptr[i] = from[i+1];
-            ptr[i+1] = from[i];
+            break;
         }
-        break;
-        }
-        break;
-                        }
-    case RDP_FORMAT_I: {
-        glfmt = GL_INTENSITY;
-        //       if (RDP_GETOM_ALPHA_CVG_SELECT(rdpState.otherModes))
-        //         glfmt = GL_LUMINANCE;
-        glpixfmt = GL_LUMINANCE;
-        switch (tile.size) {
-    case 0: {
-        packed = GL_UNSIGNED_BYTE;
-        ptr = rglTmpTex;
-        for (i=0; i<tile.h*tile.w/2; i++) {
-            uint32_t a = from[i]&0xF0;
-            ptr[i*2+1] = a | (a>>4);
-            a = from[i]&0x0F;
-            ptr[i*2] = a | (a<<4);
-        }
-        break;
+        case RDP_FORMAT_I: {
+            glfmt = GL_INTENSITY;
+            //       if (RDP_GETOM_ALPHA_CVG_SELECT(rdpState.otherModes))
+            //         glfmt = GL_LUMINANCE;
+            glpixfmt = GL_LUMINANCE;
+            switch (tile.size) {
+            case 0: {
+                packed = GL_UNSIGNED_BYTE;
+                ptr = rglTmpTex;
+                for (i=0; i<tile.h*tile.w/2; i++) {
+                    uint32_t a = from[i]&0xF0;
+                    ptr[i*2+1] = a | (a>>4);
+                    a = from[i]&0x0F;
+                    ptr[i*2] = a | (a<<4);
+                }
+                break;
             }
-    case 1: {
-        packed = GL_UNSIGNED_BYTE;
-        break;
+            case 1: {
+                packed = GL_UNSIGNED_BYTE;
+                break;
             }
+            }
+            break;
         }
-        break;
-                       }
         }
 
         if (packed) {
@@ -650,8 +654,6 @@ GL_MIRROR_CLAMP_TO_EDGE_EXT : GL_MIRRORED_REPEAT;
         if (!packed) {
             LOGERROR("unsuported format %s size %d\n", rdpImageFormats[tile.format], tile.size);
         }
-
-
     }
 ok2:
     rglTexCache[tile.tmem].counter = rglTexCacheCounter;
