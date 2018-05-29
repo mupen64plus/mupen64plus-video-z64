@@ -1254,16 +1254,17 @@ void rglPrepareRendering(int texturing, int tilenum, int recth, int depth)
             // first search the most recent without considering the width of the buffer
             rglRenderBuffer_t * buf;
             curZBuffer = 0;
-            CIRCLEQ_FOREACH(rglRenderBuffer_t, buf, &rBufferHead, link)
+            CIRCLEQ_FOREACH(rglRenderBuffer_t, buf, &rBufferHead, link) {
                 if (buf->addressStart == rdpZbAddress) {
                     curZBuffer = buf;
                     break;
                 }
-                if (!curZBuffer) {
-                    curZBuffer = rglSelectRenderBuffer(rdpZbAddress, rdpFbWidth, 2, RDP_FORMAT_RGBA);
-                    CIRCLEQ_REMOVE(&rBufferHead, curZBuffer, link);
-                    CIRCLEQ_INSERT_HEAD(rglRenderBuffer_t, &rBufferHead, curZBuffer, link);
-                }
+            }
+            if (!curZBuffer) {
+                curZBuffer = rglSelectRenderBuffer(rdpZbAddress, rdpFbWidth, 2, RDP_FORMAT_RGBA);
+                CIRCLEQ_REMOVE(&rBufferHead, curZBuffer, link);
+                CIRCLEQ_INSERT_HEAD(rglRenderBuffer_t, &rBufferHead, curZBuffer, link);
+            }
     }
 
     if (rdpChanged & (RDP_BITS_ZB_SETTINGS | RDP_BITS_FB_SETTINGS)) {
@@ -1622,7 +1623,7 @@ void rglFramebuffer2Rdram(rglRenderBuffer_t & buffer, uint32_t start, uint32_t s
     if (depth) {
         if (!exptable[255])
             build_exptable();
-        for (x=rx; x<rx+rw; x++) 
+        for (x=rx; x<rx+rw; x++) {
             for (y=ry; y<ry+rh; y++) {
                 uint32_t a = *(float *)&fb[(x-rx)*4 + (y-ry)*rw*4] * ((1<<18)-1);
                 //uint32_t a = uint32_t(*(uint16_t *)&fb[(x-rx)*4 + (y-ry)*rw*4]) << 2;
@@ -1636,10 +1637,11 @@ void rglFramebuffer2Rdram(rglRenderBuffer_t & buffer, uint32_t start, uint32_t s
                 //(*(uint16_t *)&fb[(x-rx)*2 + (y-ry)*rw*2] - int(0x8000))*2;
                 //(*(float *)&fb[(x-rx)*4 + (y-ry)*rw*4]-0.5)*0x1ffff;
             }
+        }
     } else {
         switch (buffer.size) {
-      case 1:
-          for (x=rx; x<rx+rw; x++) 
+        case 1:
+          for (x=rx; x<rx+rw; x++) {
               for (y=ry; y<ry+rh; y++) {
                   int r = fb[(x-rx + (y-ry)*rw)*4 + 0];
                   //             int g = fb[(x-rx + (y-ry)*rw)*4 + 1];
@@ -1649,9 +1651,10 @@ void rglFramebuffer2Rdram(rglRenderBuffer_t & buffer, uint32_t start, uint32_t s
                       r;
                   //(r+g+b)/3; // FIXME just R ?
               }
-              break;
-      case 2:
-          for (x=rx; x<rx+rw; x++) 
+           }
+           break;
+        case 2:
+          for (x=rx; x<rx+rw; x++) {
               for (y=ry; y<ry+rh; y++) {
                   int r = fb[(x-rx + (y-ry)*rw)*4 + 0];
                   int g = fb[(x-rx + (y-ry)*rw)*4 + 1];
@@ -1661,7 +1664,8 @@ void rglFramebuffer2Rdram(rglRenderBuffer_t & buffer, uint32_t start, uint32_t s
                       ((r&0xf8)<<8) | ((g&0xf8)<<3) | ((b&0xf8)>>2) |
                       ((a&0x80)>>7);
               }
-              break;
+          }
+          break;
         }
     }
 

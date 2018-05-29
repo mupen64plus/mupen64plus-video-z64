@@ -103,7 +103,7 @@ static void MarkTmemArea(int start, int stop, uint32_t from, uint32_t fromLine,
 uint32_t rdpGetTmemOrigin(int tmem, int * line, int * stop, int * format, int * size)
 {
     int i;
-    for (i=0; i<nbTmemAreas; i++)
+    for (i=0; i<nbTmemAreas; i++) {
         if (tmemAreas[i].start == tmem) {
             *line = tmemAreas[i].fromLine;
             *stop = tmemAreas[i].stop;
@@ -111,8 +111,9 @@ uint32_t rdpGetTmemOrigin(int tmem, int * line, int * stop, int * format, int * 
             *size = tmemAreas[i].fromSize;
             return tmemAreas[i].from;
         }
+    }
 
-        return ~0;
+    return ~0;
 }
 
 inline uint32_t READ_RDP_DATA(uint32_t address)
