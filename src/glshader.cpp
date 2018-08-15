@@ -35,9 +35,6 @@
 #include <glext.h>
 #else
 #include <GL/gl.h>
-#ifndef WIN32
-    #include <GL/glext.h>
-#endif
 #endif
 #include "glshader.h"
 
