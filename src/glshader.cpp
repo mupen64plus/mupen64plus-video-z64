@@ -20,6 +20,7 @@
 **/
 
 #include <GL/glew.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,18 +28,6 @@
 #include "m64p_types.h"
 #include "rdp.h"
 #include "rgl_assert.h"
-#if defined(__MACOSX__)
-#include <OpenGL/gl.h>
-#include <OpenGL/glext.h>
-#elif defined(__MACOS__)
-#include <gl.h>
-#include <glext.h>
-#else
-#include <GL/gl.h>
-#ifndef WIN32
-    #include <GL/glext.h>
-#endif
-#endif
 #include "glshader.h"
 
 static void printInfoLog(GLhandleARB obj, const char * src)

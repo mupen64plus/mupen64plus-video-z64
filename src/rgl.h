@@ -29,13 +29,6 @@
 #include "queue.h"
 #include "rdp.h"
 #include "rgl_assert.h"
-#if defined(__MACOSX__)
-#include <OpenGL/gl.h>
-#elif defined(__MACOS__)
-#include <gl.h>
-#else
-#include <GL/gl.h>
-#endif
 
 #ifdef RDP_DEBUG
 //#include <IL/il.h>
