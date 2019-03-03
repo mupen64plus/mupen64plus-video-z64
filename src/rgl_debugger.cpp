@@ -24,6 +24,12 @@
 #include "rdp.h"
 #include "rgl.h"
 
+#if defined(__GNUC__)
+#define ATTR_FMT(fmtpos, attrpos) __attribute__ ((format (printf, fmtpos, attrpos)))
+#else
+#define ATTR_FMT(fmtpos, attrpos)
+#endif
+
 static const char *saRGBText[] =
 {
     "PREV",               "TEXEL0",               "TEXEL1",               "PRIM", 
@@ -176,7 +182,7 @@ void gglPrint(int x, int y, const char * text)
     //printf("%s\n", text);
 }
 
-void gglPrintf(int x, int y, const char * s, ...)
+void gglPrintf(int x, int y, const char * s, ...) ATTR_FMT(3,4)
 {
     char buf[1024];
     va_list ap;

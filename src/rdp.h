@@ -22,6 +22,12 @@
 #ifndef _RDP_H_
 #define _RDP_H_
 
+#if defined(__GNUC__)
+#define ATTR_FMT(fmtpos, attrpos) __attribute__ ((format (printf, fmtpos, attrpos)))
+#else
+#define ATTR_FMT(fmtpos, attrpos)
+#endif
+
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -247,7 +253,7 @@ int rdp_dasm(uint32_t * rdp_cmd_data, int rdp_cmd_cur, int length, char *buffer)
 void rdp_process_list(void);
 int rdp_store_list(void);
 
-void rdp_log(m64p_msg_level level, const char *msg, ...);
+void rdp_log(m64p_msg_level level, const char *msg, ...) ATTR_FMT(2,3);
 
 #ifdef RDP_DEBUG
 
@@ -258,7 +264,9 @@ extern int rdp_dump;
 
 #define DUMP if (!rdp_dump) ; else LOG
 
-static void LOG(const char * s, ...)
+static void LOG(const char * s, ...) ATTR_FMT(1,2);
+
+void LOG(const char * s, ...)
 {
     va_list ap;
     va_start(ap, s);
