@@ -46,8 +46,8 @@ jobs:
           sudo apt-get -y install libgl1-mesa-dev libglew-dev libsdl1.2-dev libsdl2-dev
           if [[ "${{ matrix.platform }}" == "x86" ]]; then
             sudo apt-get --reinstall -y install gcc-multilib g++-multilib libc6 libc6-dev-i386 libgl1-mesa-glx:i386 libglu1-mesa:i386 libsdl1.2debian:i386 libsdl2-2.0-0:i386 libx11-6:i386
-            curl -L -o /tmp/libglew2.2_2.2.0-4_i386.deb http://http.us.debian.org/debian/pool/main/g/glew/libglew2.2_2.2.0-4_i386.deb
-            dpkg-deb -x /tmp/libglew2.2_2.2.0-4_i386.deb /tmp/i386/
+            curl -L -o /tmp/libglew2.2_2.2.0-4+b1_i386.deb http://http.us.debian.org/debian/pool/main/g/glew/libglew2.2_2.2.0-4+b1_i386.deb
+            dpkg-deb -x /tmp/libglew2.2_2.2.0-4+b1_i386.deb /tmp/i386/
             sudo cp -r /tmp/i386/usr/lib/i386-linux-gnu/libGLEW.so.* /usr/lib/i386-linux-gnu/
             LINK="sudo ln -s -T"
             cd /usr/lib/i386-linux-gnu
