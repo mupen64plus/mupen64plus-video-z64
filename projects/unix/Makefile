@@ -117,6 +117,9 @@ ifeq ("$(CPU)","NONE")
   $(error CPU type "$(HOST_CPU)" not supported.  Please file bug report at 'https://github.com/mupen64plus/mupen64plus-core/issues')
 endif
 
+SRCDIR = ../../src
+OBJDIR = _obj$(POSTFIX)
+
 # base CFLAGS, LDLIBS, and LDFLAGS
 OPTFLAGS ?= -O3 -flto
 WARNFLAGS ?= -Wall
@@ -161,6 +164,10 @@ endif
 ifeq ($(OS), LINUX)
   # only export api symbols
   LDFLAGS += -Wl,-version-script,$(SRCDIR)/video_api_export.ver
+  LDLIBS += -ldl
+endif
+ifeq ($(OS), FREEBSD)
+  LDLIBS += -lc
 endif
 ifeq ($(OS), OSX)
   # Select the proper SDK
@@ -186,12 +193,6 @@ ifeq ($(OS), OSX)
       LDLIBS += -ldl
     endif
   endif
-endif
-ifeq ($(OS), LINUX)
-  LDLIBS += -ldl
-endif
-ifeq ($(OS), FREEBSD)
-  LDLIBS += -lc
 endif
 
 # test for essential build dependencies
@@ -310,18 +311,12 @@ endif
 ifeq ($(PREFIX),)
   PREFIX := /usr/local
 endif
-ifeq ($(SHAREDIR),)
-  SHAREDIR := $(PREFIX)/share/mupen64plus
-endif
 ifeq ($(LIBDIR),)
   LIBDIR := $(PREFIX)/lib
 endif
 ifeq ($(PLUGINDIR),)
   PLUGINDIR := $(LIBDIR)/mupen64plus
 endif
-
-SRCDIR = ../../src
-OBJDIR = _obj$(POSTFIX)
 
 # list of source files to compile
 SOURCE = \
@@ -369,7 +364,6 @@ targets:
 	@echo "    POSTFIX=name  == String added to the name of the the build (default: '')"
 	@echo "  Install Options:"
 	@echo "    PREFIX=path   == install/uninstall prefix (default: /usr/local)"
-	@echo "    SHAREDIR=path == path to install shared data files (default: PREFIX/share/mupen64plus)"
 	@echo "    LIBDIR=path   == library prefix (default: PREFIX/lib)"
 	@echo "    PLUGINDIR=path == path to install plugin libraries (default: LIBDIR/mupen64plus)"
 	@echo "    DESTDIR=path  == path to prepend to all installation paths (only for packagers)"
@@ -382,7 +376,6 @@ all: $(TARGET)
 install: $(TARGET)
 	$(INSTALL) -d "$(DESTDIR)$(PLUGINDIR)"
 	$(INSTALL) -m 0644 $(INSTALL_STRIP_FLAG) $(TARGET) "$(DESTDIR)$(PLUGINDIR)"
-	$(INSTALL) -d "$(DESTDIR)$(SHAREDIR)"
 
 uninstall:
 	$(RM) "$(DESTDIR)$(PLUGINDIR)/$(TARGET)"
