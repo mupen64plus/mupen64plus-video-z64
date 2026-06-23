@@ -29,7 +29,7 @@ jobs:
     name: Linux / ${{ matrix.cc }} ${{ matrix.arch }}
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Get build dependencies and arrange the environment
         run: |
           git clone --depth 1 https://github.com/mupen64plus/mupen64plus-core.git ../mupen64plus-core
@@ -42,7 +42,7 @@ jobs:
           ./../mupen64plus-core/.github/workflows/scripts/ci_build.sh ${{ matrix.arch }} ${{ matrix.cc }} makepkg
       - name: Upload artifact
         if: matrix.cc == 'GCC'
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ env.PKG_NAME }}
           path: pkg/*.tar.gz
@@ -57,10 +57,6 @@ jobs:
             cross: x86_64
             env: MINGW64
           - cc: GCC
-            arch: x86
-            cross: i686
-            env: MINGW32
-          - cc: GCC
             arch: x64
             cross: ucrt-x86_64
             env: UCRT64
@@ -69,12 +65,12 @@ jobs:
             cross: clang-x86_64
             env: CLANG64
     name: Windows ${{ matrix.arch }} / MSYS2 ${{ matrix.env }} ${{ matrix.cc }}
-    runs-on: windows-2025
+    runs-on: windows-latest
     defaults:
       run:
         shell: msys2 {0}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: msys2/setup-msys2@v2
         with:
           msystem: ${{ matrix.env }}
@@ -95,7 +91,7 @@ jobs:
         run: |
           ./../mupen64plus-core/.github/workflows/scripts/ci_backup_mingw_deps.sh ${{ matrix.env }}
       - name: Upload artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ env.PKG_NAME }}
           path: pkg/*
@@ -105,9 +101,9 @@ jobs:
     if: github.ref_name == 'master'
     needs: [Linux, MSYS2]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Download artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           path: binaries
       - name: Get some tools
